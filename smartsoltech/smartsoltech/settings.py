@@ -82,8 +82,12 @@ WSGI_APPLICATION = 'smartsoltech.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),  # Имя сервиса контейнера базы данных в docker-compose.yml
+        'PORT': 5432,
     }
 }
 
@@ -149,7 +153,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "Smartsoltech Admin",
     "site_header": "Smartsoltech",
     "welcome_sign": "Добро пожаловать в панель управления Smartsoltech",
-    "site_logo": "static/img/logo.svg",
+    "site_logo": "img/logo.svg",
     "search_model": "web.Client",
     "user_avatar": "web.Client.image",
     "topmenu_links": [
