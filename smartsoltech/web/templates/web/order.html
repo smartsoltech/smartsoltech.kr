@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4 py-xl-5">
+    <div class="row mb-5">
+        <div class="col-md-8 col-xl-6 text-center mx-auto">
+            <h2>Отзывы</h2>
+        </div>
+    </div>
+    <div class="row gy-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
+        {% for review in reviews %}
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <p class="bg-body-tertiary border rounded border-0 p-4">{{ review.comment }}</p>
+                    <div class="d-flex">
+                        {% if review.client.image %}
+                            <img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="{{ review.client.image.url }}" />
+                        {% else %}
+                            <img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" />
+                        {% endif %}
+                        <div>
+                            <p class="fw-bold text-primary mb-0">{{ review.client.first_name }} {{ review.client.last_name }}</p>
+                            <p class="text-muted mb-0">Оценка: {{ review.rating }} из 5</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="orderModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Оформление заявки на услугу</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Выбор услуги</label>
+                        <select id="service" class="form-select" name="service">
+                            {% for service in services %}
+                                <option value="{{ service.id }}">{{ service.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Имя</label>
+                        <input id="name" class="form-control" type="text" name="name" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Телефон</label>
+                        <input id="phone" class="form-control" type="tel" name="phone" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Адрес электронной почты</label>
+                        <input id="email" class="form-control" type="email" name="email" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Описание услуги</label>
+                        <textarea id="description" class="form-control" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Дата связи</label>
+                        <input id="contact_date" class="form-control" type="date" name="contact_date" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

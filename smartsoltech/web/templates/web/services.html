@@ -1,0 +1,32 @@
+{% extends 'web/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4 py-xl-5">
+    <div class="row mb-5">
+        <div class="col-md-8 col-xl-6 text-center mx-auto">
+            <h2>Наши Услуги</h2>
+            <p class="w-lg-50">Предоставляем современные решения для вашего бизнеса. Ознакомьтесь с нашими услугами ниже.</p>
+        </div>
+    </div>
+    <div class="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
+        {% for service in services %}
+        <div class="col">
+            <div class="card">
+                {% if service.image %}
+                    <img class="card-img-top w-100 d-block fit-cover" style="width: 300px; height: 200px; object-fit: cover;" src="{{ service.image.url }}" />
+                {% else %}
+                    <img class="card-img-top w-100 d-block fit-cover" style="width: 300px; height: 200px; object-fit: cover;" src="{{ service.image}}" />
+                {% endif %}
+                <div class="card-body p-4">
+                    <h4 class="card-title">
+                        <a href="{% url 'service_detail' service.pk %}">{{ service.name }}</a>
+                    </h4>
+                    <p class="card-text">{{ service.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

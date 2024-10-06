@@ -1,0 +1,26 @@
+<!-- web/templates/web/home.html -->
+{% extends 'web/base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h1>Добро пожаловать в Smartsoltech</h1>
+<p>Предоставляем современные решения для бизнеса, включая разработку ПО, установку видеонаблюдения и многое другое.</p>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Наши Услуги</h2>
+        <p>Посмотрите наши предложения и выберите то, что вам нужно.</p>
+        <a class="btn btn-primary" href="services">Подробнее</a>
+    </div>
+    <div class="col-md-4">
+        <h2>Наши Проекты</h2>
+        <p>Посмотрите на наши успешные проекты.</p>
+        <a class="btn btn-primary" href="#">Подробнее</a>
+    </div>
+    <div class="col-md-4">
+        <h2>Блог</h2>
+        <p>Последние новости и обновления в нашем блоге.</p>
+        <a class="btn btn-primary" href="#">Читать</a>
+    </div>
+</div>
+{% endblock %}
