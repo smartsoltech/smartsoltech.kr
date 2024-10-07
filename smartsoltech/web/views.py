@@ -36,6 +36,35 @@ def services_view(request):
     services = Service.objects.all()
     return render(request, 'web/services.html', {'services': services})
 
+# def create_order(request, pk):
+#     if request.method == 'POST':
+#         service = get_object_or_404(Service, pk=pk)
+#         client_name = request.POST.get('client_name')
+#         client_email = request.POST.get('client_email')
+#         client_phone = request.POST.get('client_phone')
+#         message = request.POST.get('message')
+
+#         # Создаем клиента, если он не существует
+#         client, created = Client.objects.get_or_create(
+#             email=client_email,
+#             defaults={'first_name': client_name, 'phone_number': client_phone}
+#         )
+
+#         # Создаем новый заказ
+#         order = Order(
+#             service=service,
+#             client=client,
+#             client_email=client.email,
+#             client_phone=client.phone_number,
+#             message=message,
+#         )
+#         order.save()
+
+#         # Редирект на страницу подтверждения или обратно к услуге
+#         return redirect('service_detail', pk=pk)
+
+
+
 def create_order(request, pk):
     if request.method == 'POST':
         service = get_object_or_404(Service, pk=pk)
@@ -54,14 +83,13 @@ def create_order(request, pk):
         order = Order(
             service=service,
             client=client,
-            client_email=client.email,
-            client_phone=client.client_phone,
             message=message,
         )
         order.save()
 
         # Редирект на страницу подтверждения или обратно к услуге
         return redirect('service_detail', pk=pk)
-
+    
+    
 def about_view(request):
     return render(request, 'web/about.html')

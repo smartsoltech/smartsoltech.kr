@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Service, Project, Client, Order, Review, BlogPost, Category
+from .forms import ProjectForm
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
@@ -8,9 +9,10 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name','category', 'client')
-    list_filter = ('category',)
-    search_fields = ('name', 'client__first_name', 'client__last_name')
+    form = ProjectForm
+    list_display = ('name', 'client','service', 'status', 'order', 'description')
+    list_filter = ('name', 'client','service', 'status', 'order')
+    search_fields = ('name', 'client','service', 'status', 'order', 'client__first_name', 'client__last_name')
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
@@ -19,7 +21,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('client', 'order_date', 'client_email', 'client_phone', 'service', 'order_date', 'status')
+    list_display = ('id', 'service', 'client', 'client__email', 'client__phone_number', 'status')
     list_filter = ('status','client', 'order_date')
     search_fields = ('client__first_name', 'service__name','status','client', 'order_date')
 

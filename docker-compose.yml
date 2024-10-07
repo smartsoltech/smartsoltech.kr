@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - web_db_network
+      - pgadmin_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    networks:
+      - pgadmin_network
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:latest
+    container_name: zabbix_agent
+    env_file: .env
+    environment:
+      ZBX_SERVER_HOST: ${ZBX_SERVER_HOST}
+    volumes:
+      - /proc:/host/proc
+      - /sys:/host/sys
+      - /etc:/host/etc
+    privileged: true
+    networks:
+      - zabbix_network
+
+  web:
+    build: .
+    container_name: django_app
+    env_file: .env
+    volumes:
+      - .:/app
+      - ./wait-for-it.sh:/wait-for-it.sh
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - web_db_network
+
+volumes:
+  pgdata:
+  pgadmin:
+
+networks:
+  web_db_network:
+  pgadmin_network:
+  zabbix_network:

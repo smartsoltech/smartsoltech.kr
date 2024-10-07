@@ -1,0 +1,36 @@
+<!-- web/templates/web/modal_order_form.html -->
+<div id="orderModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Оформление заявки на услугу</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="orderForm" method="post" action="{% url 'create_order' pk=service.pk %}">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label class="form-label">Имя</label>
+                        <input id="client_name" class="form-control" type="text" name="client_name" required minlength="2" maxlength="50" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Телефон</label>
+                        <input id="client_phone" class="form-control" type="tel" name="client_phone" required pattern="^\+?[0-9\s\-]{7,15}$" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Адрес электронной почты</label>
+                        <input id="client_email" class="form-control" type="email" name="client_email" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Описание услуги</label>
+                        <textarea id="message" class="form-control" name="message" rows="4" required minlength="10" maxlength="1000"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

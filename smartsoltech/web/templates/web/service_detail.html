@@ -5,8 +5,6 @@
 
 {% block content %}
 
-
-
 <div class="container py-4 py-xl-5">
     <div class="row gy-4 gy-md-0">
         <div class="col-md-6">
@@ -22,109 +20,45 @@
     </div>
 </div>
 
-<!-- Модальное окно для оформления заявки -->
-<div id="orderModal" class="modal fade" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Оформление заявки на услугу</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="orderForm" method="post" action="{% url 'create_order' pk=service.pk %}">
-                    {% csrf_token %}
-                    <div class="form-group mb-3">
-                        <label class="form-label">Имя</label>
-                        <input id="client_name" class="form-control" type="text" name="client_name" required minlength="2" maxlength="50" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Телефон</label>
-                        <input id="client_phone" class="form-control" type="tel" name="client_phone" required pattern="^\+?[0-9\s\-]{7,15}$" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Адрес электронной почты</label>
-                        <input id="client_email" class="form-control" type="email" name="client_email" required />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Описание услуги</label>
-                        <textarea id="message" class="form-control" name="message" rows="4" required minlength="10" maxlength="1000"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Отправить заявку</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="container py-4 py-xl-5">
-    <div class="row mb-5">
+{% include "web/modal_order_form.html" %}
+<div class="container py-4">
+    <div class="row-cols-auto">
         <div class="col-md-8 col-xl-6 text-center mx-auto">
-            <h2>Отзывы</h2>
-            <p>Пожалуйста, оставьте отзыв, нажав на кнопку ниже. Нам важна ваша обратная связь. Спасибо!</p>
-            <button class="btn btn-primary mb-4" type="button" data-bs-toggle="modal" data-bs-target="#addReview">Добавить отзыв</button>
-        </div>
-    </div>
-    <div id="addReview" class="modal fade" role="dialog" tabindex="-1">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Добавить отзыв</h3>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Пожалуйста, заполните форму ниже, чтобы оставить отзыв. Если вы хотите, чтобы ваше имя не отображалось, выберите опцию "Анонимный отзыв". Спасибо!</p>
-                </div>
-                <form>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Имя</label>
-                        <input id="firstName" class="form-control" type="text" maxlength="50" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Фамилия</label>
-                        <input id="lastName" class="form-control" type="text" maxlength="50" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Адрес электронной почты</label>
-                        <input id="email" class="form-control" type="email" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <select id="rating" class="form-select">
-                            <option value="0" selected>Пожалуйста, введите свою оценку</option>
-                            <option value="1">*</option>
-                            <option value="2">**</option>
-                            <option value="3">***</option>
-                            <option value="4">****</option>
-                            <option value="5">*****</option>
-                        </select>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Отзыв</label>
-                        <textarea id="review" class="form-control" rows="3" maxlength="2000"></textarea>
-                    </div>
-                    <div class="form-group mb-3">
-                        <div class="form-check">
-                            <input id="anonDisplay" class="form-check-input" type="checkbox" />
-                            <label class="form-check-label" for="anonDisplay">Отображать анонимно</label>
-                        </div>
-                    </div>
-                </form>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Закрыть</button>
-                    <button id="submitReview" class="btn btn-primary" type="button">Отправить</button>
-                </div>
-            </div>
+            <h2>Проекты</h2>
+            <p>Список проектов, связанных с данной услугой:</p>
         </div>
     </div>
     <div class="row gy-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
+        {% for project in service.projects.all %}
+        <div class="col">
+            <div class="card project-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.name }}</h5>
+                    <p class="card-text small-text">{{ project.description }}</p>
+                    <p class="card-text small-text"><strong>Сообщение заказчика:</strong> {{ project.order.message }}</p>
+                    <p class="card-text small-text"><strong>Дата завершения:</strong> {{ project.completion_date }}</p>
+                    <p class="card-text small-text"><strong>Статус:</strong> {{ project.get_status_display }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row-cols-auto">
+        <div class="col-md-8 col-xl-6 text-center mx-auto">
+            <h2>Отзывы</h2>
+            <p>Наших любимых клиентов. Спасибо, что Вы с нами!</p>
+        </div>
+    </div>
+
+    <div class="row gy-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
         {% for review in reviews %}
         <div class="col">
-            <div class="card">
+            <div class="card review-card">
                 <div class="card-body">
-                    <p class="card-text">{{ review.comment }}</p>
+                    <p class="card-text small-text">{{ review.comment }}</p>
                     <div class="d-flex">
                         {% if review.client.image %}
                             <img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="{{ review.client.image.url }}" />
@@ -132,8 +66,8 @@
                             <img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" />
                         {% endif %}
                         <div>
-                            <p class="fw-bold text-primary mb-0">{{ review.client.first_name }} {{ review.client.last_name }}</p>
-                            <p class="text-muted mb-0">Оценка: {{ review.rating }} из 5</p>
+                            <p class="fw-bold text-primary mb-0 small-text">{{ review.client.first_name }} {{ review.client.last_name }}</p>
+                            <p class="text-muted mb-0 small-text">Оценка: {{ review.rating }} из 5</p>
                         </div>
                     </div>
                 </div>
@@ -142,7 +76,6 @@
         {% endfor %}
     </div>
 </div>
-
 
 <script>
     // JavaScript для дополнительной проверки формы
@@ -155,6 +88,6 @@
             event.preventDefault(); // Останавливаем отправку формы
         }
     });
-    </script>
+</script>
 
 {% endblock %}
