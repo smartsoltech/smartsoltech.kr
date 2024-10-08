@@ -1,5 +1,7 @@
 # web/models.py
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -80,3 +82,17 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review by {self.client.first_name} {self.client.last_name} for {self.service.name}"
+    
+    COMMUNICATION_METHODS = [
+    ('email', 'Email'),
+    ('telegram', 'Telegram'),
+    ('sms', 'SMS'),
+]
+
+class User(AbstractUser):
+    telegram_id = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    preferred_communication = models.CharField(
+        max_length=20,
+        choices=COMMUNICATION_METHODS,
+        default='email',
+    )

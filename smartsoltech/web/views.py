@@ -4,7 +4,8 @@ from django.db.models import Avg
 
 
 def home(request):
-    return render(request, 'web/home.html')
+    services = Service.objects.all()
+    return render(request, 'web/home.html', {'services': services})
 
 def service_detail(request, pk):
     service = get_object_or_404(Service, pk=pk)

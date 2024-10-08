@@ -213,3 +213,18 @@ ul.main-nav > li ul.sub-menu-lists > li > a {
 .text-muted {
     font-size: 0.8rem; /* Make muted text slightly smaller */
 }
+
+
+.carousel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Затемнение */
+    z-index: 1;
+}
+
+.carousel-item img {
+    z-index: -1;
+}
