@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Service, Project, Client, Order, Review, BlogPost, Category
+from .models import Service, Project, Client, Order, Review, BlogPost, Category, ServiceRequest
 from .forms import ProjectForm
 
 @admin.register(Service)
@@ -41,3 +41,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name','description')
     search_fields = ('name',)
     
+@admin.register(ServiceRequest)
+class ServiceRequestAdmin(admin.ModelAdmin):
+    list_display = ('service','token', 'chat_id','client_name', 'client_email', 'client_phone', 'created_at')
+    search_fields = ('service','token','client_name', 'client_email', 'client_phone')
+    list_filter = ('service','token','client_name', 'client_phone')

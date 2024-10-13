@@ -1,0 +1,14 @@
+{% extends 'web/base.html' %}
+
+{% block content %}
+<h2>Детали заказа</h2>
+
+<p><strong>Номер заказа:</strong> {{ order.id }}</p>
+<p><strong>Услуга:</strong> {{ order.service.name }}</p>
+<p><strong>Клиент:</strong> {{ order.client.first_name }} {{ order.client.last_name }}</p>
+<p><strong>Сообщение:</strong> {{ order.message }}</p>
+<p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+<p><strong>Дата создания:</strong> {{ order.order_date }}</p>
+
+<a href="{% url 'home' %}">Вернуться на главную</a>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'web/base.html' %}
+<!-- web/templates/web/complete_registration_basic.html -->
+{% load static %}
+
+{% include 'web/header.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+    <h1>Регистрация</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="client_name">Имя</label>
+            <input type="text" id="client_name" name="client_name" required>
+        </div>
+        <div class="form-group">
+            <label for="client_email">Email</label>
+            <input type="email" id="client_email" name="client_email" required>
+        </div>
+        <div class="form-group">
+            <label for="client_phone">Телефон</label>
+            <input type="tel" id="client_phone" name="client_phone" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+</div>
+    <!-- Подключение JavaScript файлов из static -->
+    <script src="{% static 'assets/js/script.min.js' %}"></script>
+{% endblock%}

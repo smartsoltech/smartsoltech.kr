@@ -52,6 +52,7 @@ services:
     build: .
     container_name: django_app
     env_file: .env
+    restart: always
     volumes:
       - .:/app
       - ./wait-for-it.sh:/wait-for-it.sh
@@ -61,6 +62,21 @@ services:
       - db
     networks:
       - web_db_network
+
+  bot:
+    build: .
+    container_name: telegram_bot
+    command: python3 smartsoltech/manage.py start_telegram_bot
+    restart: always
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - web
+    networks:
+      - web_db_network
+
 
 volumes:
   pgdata:

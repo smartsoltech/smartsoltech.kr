@@ -1,0 +1,13 @@
+{% extends 'web/base.html' %}
+
+{% block content %}
+<h2>Мои заказы</h2>
+<ul>
+    {% for order in orders %}
+        <li>
+            <strong>Заказ №{{ order.id }}:</strong> {{ order.service.name }} - Статус: {{ order.get_status_display }}
+            <a href="{% url 'order_detail' order.pk %}">Подробнее</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
