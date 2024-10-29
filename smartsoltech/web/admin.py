@@ -43,6 +43,6 @@ class CategoryAdmin(admin.ModelAdmin):
     
 @admin.register(ServiceRequest)
 class ServiceRequestAdmin(admin.ModelAdmin):
-    list_display = ('service','token', 'chat_id','client_name', 'client_email', 'client_phone', 'created_at')
-    search_fields = ('service','token','client_name', 'client_email', 'client_phone')
-    list_filter = ('service','token','client_name', 'client_phone')
+    list_display = ('service','token', 'client', 'created_at')
+    search_fields = ('service','token', 'client')
+    list_filter = ('service','token','client')

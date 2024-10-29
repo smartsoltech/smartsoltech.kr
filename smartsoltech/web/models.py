@@ -70,9 +70,25 @@ class BlogPost(models.Model):
     def __str__(self):
         return self.title
     
+class ServiceRequest(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='related_service_requests', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)  # Генерация уникального токена
+    chat_id = models.CharField(max_length=100, blank=True, null=True)  # Telegram chat ID
+
+    class Meta:
+        verbose_name = 'Заявка на услугу'
+        verbose_name_plural = 'Заявки на услуги'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Request for {self.service.name} by {self.client.first_name}"
+
 class Order(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='related_orders')
+    service_request = models.OneToOneField(ServiceRequest, on_delete=models.CASCADE, related_name='related_order')
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='related_orders')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='related_orders')
     message = models.TextField(blank=True, null=True)
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
@@ -136,19 +152,3 @@ class Review(models.Model):
     def __str__(self):
         return f"Review by {self.client.first_name} {self.client.last_name} for {self.service.name}"
 
-class ServiceRequest(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    client_name = models.CharField(max_length=100)
-    client_email = models.EmailField()
-    client_phone = models.CharField(max_length=20)
-    created_at = models.DateTimeField(auto_now_add=True)
-    token = models.UUIDField(default=uuid.uuid4, unique=True)  # Генерация уникального токена
-    chat_id = models.CharField(max_length=100, blank=True, null=True)  # Telegram chat ID
-
-    class Meta:
-        verbose_name = 'Заявка на услугу'
-        verbose_name_plural = 'Заявки на услуги'
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f"Request for {self.service.name} by {self.client_name}"

@@ -126,6 +126,7 @@
 
 
 import telebot
+from telebot import types
 from decouple import config
 from django.shortcuts import get_object_or_404
 from web.models import Client, ServiceRequest, Order
@@ -152,7 +153,10 @@ class TelegramBot:
             if match:
                 self.handle_confirm_command(message, match)
             elif message.text.strip() == '/start':
-                self.bot.reply_to(message, "Ошибка: Некорректная команда. Пожалуйста, используйте ссылку, предоставленную на сайте для регистрации.")
+                kbd = types.InlineKeyboardMarkup()
+                url_btn = types.InlineKeyboardButton('Перейти на сайт', url=config("URL"))
+                kbd.add(url_btn)
+                self.bot.reply_to(message, "Здравствуйте! Данный бот предназначен для информирования клиентов SmartSolTech и регистрации на сайте. Пройдите на сайт для получения информации.", reply_markup = kbd)
             else:
                 self.bot.reply_to(message, "Здравствуйте! Пожалуйста, используйте команду /start с корректными параметрами для подтверждения регистрации.")
 
@@ -161,11 +165,14 @@ class TelegramBot:
             chat_id = message.chat.id
             client = Client.objects.filter(chat_id=chat_id).first()
             if client:
-                service_requests = ServiceRequest.objects.filter(client_email=client.email)
+                service_requests = ServiceRequest.objects.filter(chat_id=client.chat_id)
                 if service_requests.exists():
                     response = "Ваши заявки:\n"
                     for req in service_requests:
-                        response += f"Номер заявки: {req.id}, Услуга: {req.service.name}, Дата создания: {req.created_at.strftime('%d-%m-%Y')}\n"
+                        response += f"Номер заявки: {req.id}\n" \
+                                    f"Услуга: {req.service.name}\n" \
+                                    f"Дата создания: {req.created_at.strftime('%Y-%m-%d')}\n" \
+                                    f"UID заявки: {req.token}\n"
                 else:
                     response = "У вас нет активных заявок."
             else:
@@ -198,16 +205,14 @@ class TelegramBot:
             request_id = match.group(1)
             encoded_token = match.group(2)
 
-            # Декодируем токен из base64
+            # Декодируем токен
             try:
                 token = base64.urlsafe_b64decode(encoded_token + '==').decode('utf-8')
-                logging.info(f"Декодированный токен: {token}")
             except Exception as e:
-                logging.error(f"Ошибка при декодировании токена: {e}")
                 self.bot.send_message(chat_id, "Ошибка: Некорректный токен. Пожалуйста, повторите попытку позже.")
                 return
 
-            # Получаем заявку по ID и токену
+            # Получаем заявку
             service_request = ServiceRequest.objects.filter(id=request_id, token=token).first()
             if service_request:
                 # Обновляем chat_id клиента
@@ -215,12 +220,19 @@ class TelegramBot:
                 service_request.client_name = message.from_user.first_name
                 service_request.save()
 
-                response_message = (
-                    f"Здравствуйте, {message.from_user.first_name}!\n"
-                    f"Ваш Telegram аккаунт успешно подтвержден. Пожалуйста, вернитесь на сайт для заполнения остальных данных."
-                )
+                # Отправляем данные обратно на сервер для создания заявки
+                data = {
+                    "service_request_id": request_id,
+                    "client_name": message.from_user.first_name,
+                    "client_chat_id": chat_id
+                }
+                response = requests.post('http://localhost:8000/service/send_telegram_notification/', json=data)
+                if response.status_code == 200:
+                    self.bot.send_message(chat_id, "Ваш аккаунт успешно подтвержден! Вернитесь на сайт для продолжения.")
+                else:
+                    self.bot.send_message(chat_id, "Ошибка при подтверждении. Пожалуйста, повторите попытку позже.")
             else:
-                response_message = "Ошибка: Неверная заявка или токен. Пожалуйста, проверьте ссылку."
+                self.bot.send_message(chat_id, "Ошибка: Неверная заявка или токен. Пожалуйста, проверьте ссылку.")
 
             self.bot.send_message(chat_id, response_message)
         else:
