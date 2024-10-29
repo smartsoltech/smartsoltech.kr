@@ -22,6 +22,7 @@ urlpatterns = [
     path('client/orders/', views.client_orders, name='client_orders'),
     path('order/<int:pk>/', views.order_detail, name='order_detail'),
     path('service/send_telegram_notification/', views.send_telegram_notification, name='send_telegram_notification'),
+    path('service/create_request/', views.create_service_request_basic, name='create_service_request_basic'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

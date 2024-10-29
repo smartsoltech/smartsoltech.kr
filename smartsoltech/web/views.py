@@ -20,7 +20,9 @@ import hmac
 import hashlib
 import json
 from django.views.decorators.csrf import csrf_exempt
+import logging
 
+logger = logging.getLogger(__name__)
 # sens
 try:
     bot = TelegramBot()
@@ -64,215 +66,290 @@ def services_view(request):
 def about_view(request):
     return render(request, 'web/about.html')
 
-# def create_service_request(request, service_id):
-#     service = get_object_or_404(Service, pk=service_id)
-#     if request.method == 'POST':
-#         client_name = request.POST.get('client_name')
-#         client_email = request.POST.get('client_email')
-#         client_phone = request.POST.get('client_phone')
-#         description = request.POST.get('description')
-#         chat_id = request.POST.get('chat_id')
-#         token = uuid.uuid4().hex
-
-#         # Создаем заявку
-#         service_request = ServiceRequest.objects.create(
-#             service=service,
-#             client_name=client_name,
-#             client_email=client_email,
-#             client_phone=client_phone,
-#             chat_id=chat_id,
-#             token=token
-#         )
-
-#         # Генерация уникальных данных для пользователя
-#         username = f"{client_email.split('@')[0]}_{get_random_string(5)}"
-#         password = get_random_string(8)
-
-#         # Создание пользователя
-#         user = User.objects.create_user(username=username, password=password)
-#         user.first_name = client_name.split()[0] if client_name else ""
-#         user.last_name = client_name.split()[-1] if len(client_name.split()) > 1 else ""
-#         user.email = client_email
-#         user.save()
-
-#         # Создание клиента и привязка к пользователю
-#         client, created = Client.objects.get_or_create(
-#             email=client_email,
-#             defaults={
-#                 'user': user,
-#                 'first_name': user.first_name,
-#                 'last_name': user.last_name,
-#                 'phone_number': client_phone,
-#                 'chat_id': chat_id,
-#             }
-#         )
-
-#         # Создание заказа на основе заявки
-#         order = Order.objects.create(
-#             service_request=service_request,
-#             client=client,
-#             service=service,
-#             message=description,
-#             status="pending"
-#         )
-
-#         # Отправка сообщения в Telegram
-#         if chat_id:
-#             bot.send_telegram_message(client.id, service_request.id, "Ваши данные для входа на сайт.", order.id)
-
-#         return redirect(reverse('order_detail', args=[order.pk]))
-
-#     return render(request, 'web/create_service_request.html', {'service': service})
-
 def create_service_request(request, service_id):
-    service = get_object_or_404(Service, pk=service_id)
     if request.method == 'POST':
-        # Извлечение данных формы
-        client_email = request.POST.get('client_email')
-        client_phone = request.POST.get('client_phone')
-        description = request.POST.get('description')
-        chat_id = request.POST.get('client_chat_id')
-        client_name = request.POST.get('client_name')
+        try:
+            # Извлечение данных из запроса
+            data = json.loads(request.body)
+            client_email = data.get('client_email')
+            client_phone = data.get('client_phone')
+            client_name = data.get('client_name')
 
-        # Проверка на наличие существующей заявки
-        service_request = get_object_or_404(ServiceRequest, chat_id=chat_id)
+            # Проверка на наличие всех необходимых данных
+            if not all([client_email, client_phone, client_name]):
+                return JsonResponse({'status': 'error', 'message': 'Все поля должны быть заполнены'}, status=400)
 
-        # Обновление данных заявки
-        service_request.client_email = client_email
-        service_request.client_phone = client_phone
-        service_request.message = description
-        service_request.save()
+            # Получение услуги
+            service = get_object_or_404(Service, pk=service_id)
 
-        # Создание клиента и пользователя, если необходимо
-        user, _ = User.objects.get_or_create(
-            username=f"{client_email.split('@')[0]}_{get_random_string(5)}",
-            defaults={"email": client_email}
-        )
-        user.first_name = client_name.split()[0] if client_name else ""
-        user.last_name = client_name.split()[-1] if len(client_name.split()) > 1 else ""
-        user.save()
+            # Создаем или получаем клиента
+            client, created = Client.objects.get_or_create(
+                email=client_email,
+                defaults={
+                    'first_name': client_name.split()[0] if client_name else "",
+                    'last_name': client_name.split()[-1] if len(client_name.split()) > 1 else "",
+                    'phone_number': client_phone,
+                }
+            )
 
-        client, _ = Client.objects.get_or_create(
-            email=client_email,
-            defaults={
-                'user': user,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'phone_number': client_phone,
-                'chat_id': chat_id,
-            }
-        )
+            # Обновляем данные клиента, если он уже существовал
+            if not created:
+                client.first_name = client_name.split()[0]
+                client.last_name = client_name.split()[-1] if len(client_name.split()) > 1 else ""
+                client.phone_number = client_phone
+                client.save()
 
-        # Создание заказа, связанного с заявкой
-        order = Order.objects.create(
-            service_request=service_request,
-            client=client,
-            service=service_request.service,
-            message=description,
-            status="pending"
-        )
+            # Проверяем, есть ли у клиента уже активная заявка
+            existing_requests = ServiceRequest.objects.filter(client=client, service=service, chat_id__isnull=True)
+            if existing_requests.exists():
+                return JsonResponse({
+                    'status': 'existing_request',
+                    'message': 'У вас уже есть активная заявка на данную услугу. Пожалуйста, проверьте ваш Telegram для завершения процесса.'
+                })
 
-        # Отправка уведомления в Telegram
-        bot.send_telegram_message(
-            client.id,
-            service_request.id,
-            f"Ваш заказ на услугу '{service_request.service.name}' был успешно создан.",
-            order.id
-        )
+            # Создание новой заявки на услугу
+            token = uuid.uuid4().hex
+            service_request = ServiceRequest.objects.create(
+                service=service,
+                client=client,
+                token=token
+            )
 
-        return redirect(reverse('order_detail', args=[order.pk]))
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Заявка успешно создана. Пожалуйста, проверьте ваш Telegram для подтверждения.',
+                'service_request_id': service_request.id,
+            })
 
-    return render(request, 'web/create_service_request.html', {'service': service})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Неверный формат данных'}, status=400)
 
+    return JsonResponse({'status': 'error', 'message': 'Метод запроса должен быть POST'}, status=405)
 
+def create_service_request_basic(request):
+    if request.method == 'POST':
+        try:
+            # Извлечение данных из тела запроса
+            data = json.loads(request.body)
+            client_email = data.get('client_email')
+            client_phone = data.get('client_phone')
+            client_name = data.get('client_name')
+            service_id = data.get('service_id')
+            description = data.get('description')
+
+            # Проверка на наличие всех необходимых данных
+            if not all([client_email, client_phone, client_name, service_id, description]):
+                return JsonResponse({'status': 'error', 'message': 'Все поля должны быть заполнены'}, status=400)
+
+            # Получаем услугу по ID
+            service = get_object_or_404(Service, pk=service_id)
+
+            # Проверка на существование активной заявки для клиента на данную услугу
+            existing_requests = ServiceRequest.objects.filter(client__email=client_email, service=service, chat_id__isnull=True)
+            if existing_requests.exists():
+                return JsonResponse({
+                    'status': 'existing_request',
+                    'message': 'У вас уже есть активная заявка на данную услугу. Пожалуйста, проверьте ваш Telegram для завершения процесса.'
+                })
+
+            # Создаем или получаем клиента
+            user, created = User.objects.get_or_create(
+                username=f"{client_email.split('@')[0]}_{get_random_string(5)}",
+                defaults={"email": client_email}
+            )
+
+            # Обновляем данные пользователя, если он уже существовал
+            user.first_name = client_name.split()[0] if client_name else ""
+            user.last_name = client_name.split()[-1] if len(client_name.split()) > 1 else ""
+            user.save()
+
+            # Создаем или получаем объект клиента
+            client, _ = Client.objects.get_or_create(
+                email=client_email,
+                defaults={
+                    'user': user,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'phone_number': client_phone,
+                }
+            )
+
+            # Создаем заявку на услугу
+            token = uuid.uuid4().hex
+            service_request = ServiceRequest.objects.create(
+                service=service,
+                client=client,
+                token=token
+            )
+
+            # Создаем заказ на основе заявки
+            order = Order.objects.create(
+                service_request=service_request,
+                client=client,
+                service=service,
+                message=description,
+                status="pending"
+            )
+
+            # Отправляем уведомление в Telegram, если chat_id у клиента заполнен
+            if client.chat_id:
+                # Предполагается, что bot.send_telegram_message() уже настроен
+                bot.send_telegram_message(
+                    client.chat_id,
+                    f"Ваш заказ на услугу '{service.name}' был успешно создан. Пожалуйста, завершите процесс регистрации в Telegram."
+                )
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Заявка успешно создана. Пожалуйста, проверьте ваш Telegram для подтверждения.',
+                'service_request_id': service_request.id,
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Неверный формат данных'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Метод запроса должен быть POST'}, status=405)
 
 def generate_qr_code(request, service_id):
     if request.method == 'POST':
-        client_email = request.POST.get('client_email')
-        client_phone = request.POST.get('client_phone')
-        client_name = request.POST.get('client_name')
+        try:
+            data = json.loads(request.body)
+            client_email = data.get('client_email')
+            client_phone = data.get('client_phone')
+            client_name = data.get('client_name')
+
+            # Проверка на наличие всех необходимых данных
+            if not all([client_email, client_phone, client_name]):
+                logger.error("Не все поля заполнены.")
+                return JsonResponse({'error': 'Все поля должны быть заполнены'}, status=400)
+
+        except json.JSONDecodeError as e:
+            logger.error(f"Ошибка JSONDecodeError: {str(e)}")
+            return JsonResponse({'error': 'Неверный формат данных'}, status=400)
 
         # Создание или получение клиента
-        user, _ = User.objects.get_or_create(
-            username=f"{client_email.split('@')[0]}_{get_random_string(5)}",
-            defaults={"email": client_email}
-        )
-        user.first_name = client_name.split()[0] if client_name else ""
-        user.last_name = client_name.split()[-1] if len(client_name.split()) > 1 else ""
-        user.save()
+        try:
+            user, created = User.objects.get_or_create(
+                username=f"{client_email.split('@')[0]}_{get_random_string(5)}",
+                defaults={"email": client_email}
+            )
+            user.first_name = client_name.split()[0] if client_name else ""
+            user.last_name = client_name.split()[-1] if len(client_name.split()) > 1 else ""
+            user.save()
 
-        client, _ = Client.objects.get_or_create(
-            email=client_email,
-            defaults={
-                'user': user,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'phone_number': client_phone
-            }
-        )
+            client, _ = Client.objects.get_or_create(
+                email=client_email,
+                defaults={
+                    'user': user,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'phone_number': client_phone
+                }
+            )
+        except Exception as e:
+            logger.error(f"Ошибка при создании или получении клиента: {str(e)}")
+            return JsonResponse({'error': f'Ошибка при создании клиента: {str(e)}'}, status=500)
 
         # Создание новой заявки на услугу
-        service = get_object_or_404(Service, pk=service_id)
-        token = uuid.uuid4().hex
+        try:
+            service = get_object_or_404(Service, pk=service_id)
+            token = uuid.uuid4().hex
 
-        service_request = ServiceRequest.objects.create(
-            service=service,
-            client=client,
-            token=token
-        )
+            service_request = ServiceRequest.objects.create(
+                service=service,
+                client=client,
+                token=token
+            )
+        except Exception as e:
+            logger.error(f"Ошибка при создании заявки: {str(e)}")
+            return JsonResponse({'error': f'Ошибка при создании заявки: {str(e)}'}, status=500)
 
         # Генерация ссылки для регистрации в Telegram
-        telegram_settings = get_object_or_404(TelegramSettings, pk=1)
-        registration_link = f'https://t.me/{telegram_settings.bot_name}?start=request_{service_request.id}_token_{urlsafe_base64_encode(force_bytes(token))}'
+        try:
+            telegram_settings = get_object_or_404(TelegramSettings, pk=1)
+            registration_link = f'https://t.me/{telegram_settings.bot_name}?start=request_{service_request.id}_token_{urlsafe_base64_encode(force_bytes(token))}'
+        except TelegramSettings.DoesNotExist:
+            logger.error("Не удалось получить настройки Telegram.")
+            return JsonResponse({'error': 'Не удалось получить настройки Telegram'}, status=500)
 
         # Генерация QR-кода
-        qr = qrcode.make(registration_link)
-        qr_code_dir = os.path.join(settings.STATICFILES_DIRS[0], 'qr_codes')
-        qr_code_path = os.path.join(qr_code_dir, f"request_{service_request.id}.png")
-        external_qr_link = f'static/qr_codes/request_{service_request.id}.png'
+        try:
+            qr = qrcode.make(registration_link)
+            qr_code_dir = os.path.join(settings.STATICFILES_DIRS[0], 'qr_codes')
+            qr_code_path = os.path.join(qr_code_dir, f"request_{service_request.id}.png")
+            external_qr_link = f'static/qr_codes/request_{service_request.id}.png'
 
-        if not os.path.exists(qr_code_dir):
-            os.makedirs(qr_code_dir)
+            if not os.path.exists(qr_code_dir):
+                os.makedirs(qr_code_dir)
 
-        qr.save(qr_code_path)
+            qr.save(qr_code_path)
+        except Exception as e:
+            logger.error(f"Ошибка при генерации QR-кода: {str(e)}")
+            return JsonResponse({'error': f'Ошибка при генерации QR-кода: {str(e)}'}, status=500)
 
+        # Возвращаем ответ, включающий все необходимые данные
         return JsonResponse({
             'registration_link': registration_link,
             'qr_code_url': f"/{external_qr_link}",
-            'service_request_id': service_request.id
+            'service_request_id': service_request.id,
+            'client_email': client_email,
+            'client_phone': client_phone,
+            'client_name': client_name
         })
     else:
+        logger.error("Неправильный метод запроса")
         return JsonResponse({'error': 'Метод запроса должен быть POST'}, status=405)
+
 
 def complete_registration(request, request_id):
     # Завершение регистрации по идентификатору заявки
     service_request = get_object_or_404(ServiceRequest, pk=request_id)
     if request.method == 'POST':
-        client_name = request.POST.get('client_name', service_request.client_name)
-        client_email = request.POST.get('client_email', service_request.client_email)
-        client_phone = request.POST.get('client_phone', service_request.client_phone)
+        client_email = request.POST.get('client_email', service_request.client.email)
+        client_phone = request.POST.get('client_phone', service_request.client.phone_number)
         chat_id = request.POST.get('chat_id', service_request.chat_id)
 
-        # Обновляем данные заявки
-        service_request.client_name = client_name
-        service_request.client_email = client_email
-        service_request.client_phone = client_phone
+        # Проверка корректности данных
+        if not all([client_email, client_phone, chat_id]):
+            return JsonResponse({'status': 'error', 'message': 'Все поля должны быть заполнены.'}, status=400)
+
+        # Обновляем данные клиента
+        client = service_request.client
+        client.email = client_email
+        client.phone_number = client_phone
+        client.save()
+
+        # Обновляем заявку
         service_request.chat_id = chat_id
         service_request.save()
 
-        return redirect('home')
+        return JsonResponse({'status': 'success', 'message': 'Регистрация успешно завершена.'})
+
+    return render(request, 'web/complete_registration.html', {'service_request': service_request})
+
 
     return render(request, 'web/complete_registration.html', {'service_request': service_request})
 def request_status(request, service_id):
-    # Проверяем статус заявки на услугу
-    service_request = get_object_or_404(ServiceRequest, pk=service_id)
-    is_verified = service_request.client_name != '' and service_request.chat_id != ''
+    try:
+        # Получаем заявку на услугу по ID
+        service_request = get_object_or_404(ServiceRequest, pk=service_id)
+        
+        # Получаем объект клиента через связанное поле client
+        client = service_request.client
 
-    return JsonResponse({
-        'is_verified': is_verified,
-        'client_name': service_request.client_name,
-        'client_chat_id' : service_request.chat_id,
-})
+        # Проверка, что клиент существует и его Telegram chat_id заполнен
+        is_verified = bool(client and client.chat_id)
+
+        # Возвращаем данные клиента и статус верификации
+        return JsonResponse({
+            'is_verified': is_verified,
+            'client_name': client.first_name if client else "Неизвестно",
+            'client_chat_id': client.chat_id if client else None,
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 def complete_registration_basic(request):
     # Базовая регистрация без идентификатора заявки
@@ -355,8 +432,9 @@ def send_telegram_notification(request):
             if not chat_id:
                 return JsonResponse({'error': 'Нет chat_id для отправки сообщения'}, status=400)
 
+            # Составление и отправка сообщения
             message = (
-                f"Здравствуйте, {service_request.client_name}!\n"
+                f"Здравствуйте, {service_request.client.first_name}!\n"
                 f"Ваша заявка на услугу '{service_request.service.name}' успешно зарегистрирована."
             )
 
@@ -364,6 +442,8 @@ def send_telegram_notification(request):
 
             return JsonResponse({'status': 'Уведомление успешно отправлено в Telegram'})
 
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Неверный формат данных'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
