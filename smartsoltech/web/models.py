@@ -76,11 +76,12 @@ class ServiceRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     token = models.UUIDField(default=uuid.uuid4, unique=True)  # Генерация уникального токена
     chat_id = models.CharField(max_length=100, blank=True, null=True)  # Telegram chat ID
-
+    is_verified = models.BooleanField(default=False)
+    
     class Meta:
         verbose_name = 'Заявка на услугу'
         verbose_name_plural = 'Заявки на услуги'
-        ordering = ['-created_at']
+        ordering = ['-is_verified', '-created_at']
 
     def __str__(self):
         return f"Request for {self.service.name} by {self.client.first_name}"
@@ -150,5 +151,5 @@ class Review(models.Model):
         ordering = ['-review_date']
 
     def __str__(self):
-        return f"Review by {self.client.first_name} {self.client.last_name} for {self.service.name}"
+        return f"Отзыв от {self.client.first_name} {self.client.last_name} for {self.service.name}"
 

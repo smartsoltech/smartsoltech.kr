@@ -1,110 +1,49 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Работа с модальным окном заявки
     var modalElement = document.getElementById('orderModal');
     if (modalElement) {
         var modal = new bootstrap.Modal(modalElement);
-        
+
         // Инициализация модального окна
-        modalElement.addEventListener('show.bs.modal', function (event) {
+        modalElement.addEventListener('show.bs.modal', function () {
             console.log("Модальное окно открыто");
         });
 
-        modalElement.addEventListener('hide.bs.modal', function (event) {
+        modalElement.addEventListener('hide.bs.modal', function () {
             console.log("Модальное окно закрыто");
         });
     }
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-    const generateQrButton = document.getElementById('generateQrButton');
+    // Открытие модального окна для заявки на услугу
+    const openModalBtn = document.getElementById('openModalBtn');
+    const serviceModal = document.getElementById('serviceModal');
 
-    if (generateQrButton) {
-        generateQrButton.addEventListener('click', function () {
-            const clientEmail = document.getElementById('clientEmail').value;
-            const clientPhone = document.getElementById('clientPhone').value;
-            const clientName = document.getElementById('clientName').value;
-            const description = document.getElementById('description').value;
-            const serviceId = generateQrButton.getAttribute('data-service-id');
+    if (openModalBtn && serviceModal) {
+        openModalBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            const serviceId = openModalBtn.getAttribute('data-service-id');
+            console.log("Service ID при открытии модального окна:", serviceId);
 
-            // Проверка заполненности полей
-            if (!clientEmail || !clientPhone || !clientName || !description || !serviceId) {
-                alert('Все поля должны быть заполнены.');
+            if (!serviceId) {
+                alert("Идентификатор услуги не найден. Обновите страницу и попробуйте снова.");
                 return;
             }
 
-            // Получение CSRF токена из cookies
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
+            generateQrButton.dataset.serviceId = serviceId;
 
-            const csrftoken = getCookie('csrftoken');
-
-            // Отправка POST запроса на создание заявки
-            fetch('/service/create_request/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({
-                    client_email: clientEmail,
-                    client_phone: clientPhone,
-                    client_name: clientName,
-                    service_id: serviceId,
-                    description: description
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка при создании заявки');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    alert(data.message);
-                } else if (data.status === 'existing_request') {
-                    alert(data.message);
-                } else {
-                    alert('Неизвестная ошибка. Пожалуйста, попробуйте снова.');
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка при создании заявки:', error);
-            });
+            serviceModal.classList.add('show');
+            serviceModal.style.display = 'block';
         });
     }
-});
 
-function checkVerificationStatus(serviceRequestId, interval) {
-    fetch(`/service/request_status/${serviceRequestId}/`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Ошибка при проверке статуса заявки');
+    document.querySelectorAll('.close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function () {
+            if (serviceModal) {
+                serviceModal.classList.remove('show');
+                setTimeout(() => {
+                    serviceModal.style.display = 'none';
+                }, 500);
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.is_verified) {
-                // Закрываем форму и показываем окно подтверждения
-                document.getElementById('serviceModal').style.display = 'none';
-                document.getElementById('confirmationModal').style.display = 'block';
-
-                // Останавливаем интервал проверки статуса
-                clearInterval(interval);
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка при проверке статуса заявки:', error);
         });
-}
+    });
+});

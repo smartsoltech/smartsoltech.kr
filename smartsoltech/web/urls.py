@@ -17,12 +17,12 @@ urlpatterns = [
     path('service/request_status/<int:service_id>/', views.request_status, name='request_status'),
     path('service/request/<int:service_id>/', views.create_service_request, name='create_service_request'),
     path('complete_registration/<int:request_id>/', views.complete_registration, name='complete_registration'),
-    path('complete_registration/', views.complete_registration_basic, name='complete_registration_basic'),
-    path('service/check_service_request_data/', views.check_service_request_data, name='check_service_request_data'),
-    path('client/orders/', views.client_orders, name='client_orders'),
-    path('order/<int:pk>/', views.order_detail, name='order_detail'),
+    # path('complete_registration/', views.complete_registration_basic, name='complete_registration_basic'),
+    # path('service/check_service_request_data/', views.check_service_request_data, name='check_service_request_data'),
+    # path('client/orders/', views.client_orders, name='client_orders'),
+    # path('order/<int:pk>/', views.order_detail, name='order_detail'),
     path('service/send_telegram_notification/', views.send_telegram_notification, name='send_telegram_notification'),
-    path('service/create_request/', views.create_service_request_basic, name='create_service_request_basic'),
+    # path('service/create_request/', views.create_service_request_basic, name='create_service_request_basic'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

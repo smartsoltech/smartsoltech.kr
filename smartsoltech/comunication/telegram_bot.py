@@ -1,162 +1,40 @@
-# import telebot
-# from decouple import config
-# from django.shortcuts import get_object_or_404
-# from web.models import Client, ServiceRequest, Order
-# from comunication.models import TelegramSettings
-# import re
-# import base64
-# import logging
-
-# class TelegramBot:
-#     def __init__(self):
-#         # Get bot settings from the database
-#         bot_settings = TelegramSettings.objects.first()
-#         if bot_settings:
-#             TELEGRAM_BOT_TOKEN = bot_settings.bot_token
-#             self.bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
-#         else:
-#             raise Exception("Telegram bot settings not found")
-
-#     def start_bot_polling(self):
-#         @self.bot.message_handler(commands=['start'])
-#         def send_welcome(message):
-#             # Проверяем, содержатся ли параметры в команде /start
-#             match = re.match(r'/start request_(\d+)_token_(.*)', message.text)
-#             if match:
-#                 self.handle_confirm_command(message, match)
-#             elif message.text.strip() == '/start':
-#                 self.bot.reply_to(message, "Ошибка: Некорректная команда. Пожалуйста, используйте ссылку, предоставленную на сайте для регистрации.")
-#             else:
-#                 self.bot.reply_to(message, "Здравствуйте! Чем я могу помочь? Вы можете задать вопросы о статусе заявки или заказе.")
-
-#         @self.bot.message_handler(func=lambda message: 'статус заявки' in message.text.lower())
-#         def handle_service_request_status(message):
-#             chat_id = message.chat.id
-#             client = Client.objects.filter(chat_id=chat_id).first()
-#             if client:
-#                 service_requests = ServiceRequest.objects.filter(client_email=client.email)
-#                 if service_requests.exists():
-#                     response = "Ваши заявки:\n"
-#                     for req in service_requests:
-#                         response += f"Номер заявки: {req.id}, Услуга: {req.service.name}, Дата создания: {req.created_at.strftime('%d-%m-%Y')}\n"
-#                 else:
-#                     response = "У вас нет активных заявок."
-#             else:
-#                 response = "Клиент не найден. Пожалуйста, зарегистрируйтесь."
-#             self.bot.reply_to(message, response)
-
-#         @self.bot.message_handler(func=lambda message: 'статус заказа' in message.text.lower())
-#         def handle_order_status(message):
-#             chat_id = message.chat.id
-#             client = Client.objects.filter(chat_id=chat_id).first()
-#             if client:
-#                 orders = Order.objects.filter(client=client)
-#                 if orders.exists():
-#                     response = "Ваши заказы:\n"
-#                     for order in orders:
-#                         response += f"Номер заказа: {order.id}, Услуга: {order.service.name}, Статус: {order.get_status_display()}\n"
-#                 else:
-#                     response = "У вас нет активных заказов."
-#             else:
-#                 response = "Клиент не найден. Пожалуйста, зарегистрируйтесь."
-#             self.bot.reply_to(message, response)
-
-#         self.bot.polling(non_stop=True)
-
-#     def handle_confirm_command(self, message, match=None):
-#         chat_id = message.chat.id
-#         if not match:
-#             match = re.match(r'/start request_(\d+)_token_(.*)', message.text)
-#         if match:
-#             request_id = match.group(1)
-#             encoded_token = match.group(2)
-
-#             # Декодируем токен из base64
-#             try:
-#                 token = base64.urlsafe_b64decode(encoded_token + '==').decode('utf-8')
-#                 logging.info(f"Декодированный токен: {token}")
-#             except Exception as e:
-#                 logging.error(f"Ошибка при декодировании токена: {e}")
-#                 self.bot.send_message(chat_id, "Ошибка: Некорректный токен. Пожалуйста, повторите попытку позже.")
-#                 return
-
-#             # Получаем заявку по ID и токену
-#             service_request = ServiceRequest.objects.filter(id=request_id, token=token).first()
-#             if service_request:
-#                 # Обновляем chat_id клиента
-#                 service_request.chat_id = chat_id
-#                 service_request.client_name = message.from_user.first_name
-#                 service_request.save()
-
-#                 response_message = (
-#                     f"Здравствуйте, {message.from_user.first_name}!\n"
-#                     f"Ваша заявка на услугу успешно зарегистрирована. "
-#                     f"Пожалуйста, вернитесь на сайт для продолжения оформления."
-#                 )
-#             else:
-#                 response_message = "Ошибка: Неверная заявка или токен. Пожалуйста, проверьте ссылку."
-
-#             self.bot.send_message(chat_id, response_message)
-#         else:
-#             response_message = "Ошибка: Некорректная команда. Пожалуйста, используйте ссылку, предоставленную на сайте для регистрации."
-#             self.bot.send_message(chat_id, response_message)
-
-#     def send_telegram_message(self, client_id, service_request_id, custom_message, order_id=None):
-#         # Get the client and service request from the database
-#         client = get_object_or_404(Client, pk=client_id)
-#         service_request = get_object_or_404(ServiceRequest, pk=service_request_id)
-#         chat_id = client.chat_id
-
-#         # Build the message content
-#         message = f"Здравствуйте, {client.first_name} {client.last_name}!\n"
-#         message += custom_message
-
-#         if order_id:
-#             order = get_object_or_404(Order, pk=order_id)
-#             message += f"\n\nДетали заказа:\nУслуга: {order.service.name}\nСтатус: {order.get_status_display()}\n"
-        
-#         # Add service request details
-#         message += f"\nНомер заявки: {service_request.id}\nДата создания заявки: {service_request.created_at.strftime('%d-%m-%Y')}\n"
-
-#         # Send the message using the bot
-#         try:
-#             self.bot.send_message(chat_id, message)
-#         except Exception as e:
-#             logging.error(f"Ошибка при отправке сообщения в Telegram: {e}")
-
-
-import telebot
-from telebot import types
-from decouple import config
-from django.shortcuts import get_object_or_404
-from web.models import Client, ServiceRequest, Order
-from comunication.models import TelegramSettings
-import re
-import base64
 import logging
+import json
+import requests
+import os
+import base64
+import re
+from comunication.models import TelegramSettings
+from web.models import ServiceRequest, Order, Project, Client, User
+import telebot
+from django.shortcuts import get_object_or_404
+from django.utils.crypto import get_random_string
 
 class TelegramBot:
     def __init__(self):
-        # Get bot settings from the database
+        # Получение настроек бота из базы данных
         bot_settings = TelegramSettings.objects.first()
         if bot_settings:
             TELEGRAM_BOT_TOKEN = bot_settings.bot_token
             self.bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+            logging.info("[TelegramBot] Бот инициализирован с токеном.")
         else:
             raise Exception("Telegram bot settings not found")
 
     def start_bot_polling(self):
+        logging.info("[TelegramBot] Бот начал работу в режиме polling.")
+
         @self.bot.message_handler(commands=['start'])
         def send_welcome(message):
             # Проверяем, содержатся ли параметры в команде /start
             match = re.match(r'/start request_(\d+)_token_(.*)', message.text)
+            logging.info(f"[TelegramBot] Получена команда /start: {message.text}")
+
             if match:
                 self.handle_confirm_command(message, match)
             elif message.text.strip() == '/start':
-                kbd = types.InlineKeyboardMarkup()
-                url_btn = types.InlineKeyboardButton('Перейти на сайт', url=config("URL"))
-                kbd.add(url_btn)
-                self.bot.reply_to(message, "Здравствуйте! Данный бот предназначен для информирования клиентов SmartSolTech и регистрации на сайте. Пройдите на сайт для получения информации.", reply_markup = kbd)
+                # Ответ на просто команду /start без параметров
+                self.bot.reply_to(message, "Здравствуйте! Пожалуйста, используйте команду /start с корректными параметрами для подтверждения регистрации.")
             else:
                 self.bot.reply_to(message, "Здравствуйте! Пожалуйста, используйте команду /start с корректными параметрами для подтверждения регистрации.")
 
@@ -165,14 +43,17 @@ class TelegramBot:
             chat_id = message.chat.id
             client = Client.objects.filter(chat_id=chat_id).first()
             if client:
-                service_requests = ServiceRequest.objects.filter(chat_id=client.chat_id)
+                service_requests = ServiceRequest.objects.filter(client=client)
                 if service_requests.exists():
                     response = "Ваши заявки:\n"
                     for req in service_requests:
-                        response += f"Номер заявки: {req.id}\n" \
-                                    f"Услуга: {req.service.name}\n" \
-                                    f"Дата создания: {req.created_at.strftime('%Y-%m-%d')}\n" \
-                                    f"UID заявки: {req.token}\n"
+                        response += (
+                            f"Номер заявки: {req.id}\n"
+                            f"Услуга: {req.service.name}\n"
+                            f"Дата создания: {req.created_at.strftime('%Y-%m-%d')}\n"
+                            f"UID заявки: {req.token}\n"
+                            f"Подтверждена: {'Да' if req.is_verified else 'Нет'}\n\n"
+                        )
                 else:
                     response = "У вас нет активных заявок."
             else:
@@ -188,19 +69,52 @@ class TelegramBot:
                 if orders.exists():
                     response = "Ваши заказы:\n"
                     for order in orders:
-                        response += f"Номер заказа: {order.id}, Услуга: {order.service.name}, Статус: {order.get_status_display()}\n"
+                        response += (
+                            f"Номер заказа: {order.id}\n"
+                            f"Услуга: {order.service.name}\n"
+                            f"Статус: {order.get_status_display()}\n\n"
+                        )
                 else:
                     response = "У вас нет активных заказов."
             else:
                 response = "Клиент не найден. Пожалуйста, зарегистрируйтесь."
             self.bot.reply_to(message, response)
 
-        self.bot.polling(non_stop=True)
+        @self.bot.message_handler(func=lambda message: 'статус проекта' in message.text.lower())
+        def handle_project_status(message):
+            chat_id = message.chat.id
+            client = Client.objects.filter(chat_id=chat_id).first()
+            if client:
+                projects = Project.objects.filter(order__client=client)
+                if projects.exists():
+                    response = "Ваши проекты:\n"
+                    for project in projects:
+                        response += (
+                            f"Номер проекта: {project.id}\n"
+                            f"Название проекта: {project.name}\n"
+                            f"Статус: {project.get_status_display()}\n"
+                            f"Дата завершения: {project.completion_date.strftime('%Y-%m-%d') if project.completion_date else 'В процессе'}\n\n"
+                        )
+                else:
+                    response = "У вас нет активных проектов."
+            else:
+                response = "Клиент не найден. Пожалуйста, зарегистрируйтесь."
+            self.bot.reply_to(message, response)
+            
+
+        # Запуск бота
+        try:
+            self.bot.polling(non_stop=True)
+        except Exception as e:
+            logging.error(f"[TelegramBot] Ошибка при запуске polling: {e}")
 
     def handle_confirm_command(self, message, match=None):
         chat_id = message.chat.id
+        logging.info(f"[TelegramBot] Получено сообщение для подтверждения: {message.text}")
+
         if not match:
             match = re.match(r'/start request_(\d+)_token_(.*)', message.text)
+
         if match:
             request_id = match.group(1)
             encoded_token = match.group(2)
@@ -208,61 +122,88 @@ class TelegramBot:
             # Декодируем токен
             try:
                 token = base64.urlsafe_b64decode(encoded_token + '==').decode('utf-8')
+                logging.info(f"[TelegramBot] Декодированный токен: {token}")
             except Exception as e:
+                logging.error(f"[TelegramBot] Ошибка при декодировании токена: {e}")
                 self.bot.send_message(chat_id, "Ошибка: Некорректный токен. Пожалуйста, повторите попытку позже.")
                 return
 
             # Получаем заявку
-            service_request = ServiceRequest.objects.filter(id=request_id, token=token).first()
-            if service_request:
-                # Обновляем chat_id клиента
-                service_request.chat_id = chat_id
-                service_request.client_name = message.from_user.first_name
-                service_request.save()
+            try:
+                service_request = ServiceRequest.objects.get(id=request_id, token=token)
+                logging.info(f"[TelegramBot] Заявка найдена: {service_request}")
+            except ServiceRequest.DoesNotExist:
+                logging.error(f"[TelegramBot] Заявка с id {request_id} и токеном {token} не найдена.")
+                self.bot.send_message(chat_id, "Ошибка: Неверная заявка или токен. Пожалуйста, проверьте ссылку.")
+                return
 
-                # Отправляем данные обратно на сервер для создания заявки
-                data = {
-                    "service_request_id": request_id,
-                    "client_name": message.from_user.first_name,
-                    "client_chat_id": chat_id
-                }
-                response = requests.post('http://localhost:8000/service/send_telegram_notification/', json=data)
-                if response.status_code == 200:
-                    self.bot.send_message(chat_id, "Ваш аккаунт успешно подтвержден! Вернитесь на сайт для продолжения.")
+            # Если заявка найдена, обновляем и подтверждаем клиента
+            if service_request:
+                service_request.chat_id = chat_id
+                service_request.is_verified = True  # Обновляем статус на подтвержденный
+                service_request.save()
+                logging.info(f"[TelegramBot] Заявка {service_request.id} подтверждена и обновлена.")
+
+                # Обновляем или создаем клиента, связанного с заявкой
+                client = service_request.client
+
+                # Проверяем, существует ли связанный пользователь, если нет — создаем его
+                if not client.user:
+                    user, created = User.objects.get_or_create(
+                        email=client.email,
+                        defaults={
+                            'username': f"{client.email.split('@')[0]}_{get_random_string(5)}",
+                            'first_name': message.from_user.first_name,
+                            'last_name': message.from_user.last_name if message.from_user.last_name else ''
+                        }
+                    )
+
+                    if not created:
+                        # Если пользователь уже существовал, обновляем его данные
+                        user.first_name = message.from_user.first_name
+                        if message.from_user.last_name:
+                            user.last_name = message.from_user.last_name
+                        user.save()
+                        logging.info(f"[TelegramBot] Обновлен пользователь {user.username} с данными из Телеграм.")
+
+                    # Связываем клиента с пользователем
+                    client.user = user
+                    client.save()
+
                 else:
-                    self.bot.send_message(chat_id, "Ошибка при подтверждении. Пожалуйста, повторите попытку позже.")
+                    # Обновляем данные существующего пользователя
+                    user = client.user
+                    user.first_name = message.from_user.first_name
+                    if message.from_user.last_name:
+                        user.last_name = message.from_user.last_name
+                    user.save()
+                    logging.info(f"[TelegramBot] Пользователь {user.username} обновлен с данными из Телеграм.")
+
+                # Обновляем chat_id клиента
+                client.chat_id = chat_id
+                client.save()
+                logging.info(f"[TelegramBot] Клиент {client.id} обновлен с chat_id {chat_id}")
+
+                # Отправляем сообщение пользователю в Telegram с подтверждением и информацией о заявке
+                confirmation_message = (
+                    f"Здравствуйте, {client.first_name}!\n\n"
+                    f"Ваш аккаунт успешно подтвержден! 🎉\n\n"
+                    f"Детали вашей заявки:\n"
+                    f"Номер заявки: {service_request.id}\n"
+                    f"Услуга: {service_request.service.name}\n"
+                    f"Статус заявки: {'Подтверждена' if service_request.is_verified else 'Не подтверждена'}\n"
+                    f"Дата создания: {service_request.created_at.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                    f"Спасибо, что выбрали наши услуги! Если у вас возникнут вопросы, вы всегда можете обратиться к нам."
+                )
+                self.bot.send_message(chat_id, confirmation_message)
+
+                # Вместо дополнительного POST-запроса — сообщаем о подтверждении через сообщение
+                self.bot.send_message(chat_id, "Ваш аккаунт успешно подтвержден на сервере! Продолжайте на сайте.")
+
             else:
                 self.bot.send_message(chat_id, "Ошибка: Неверная заявка или токен. Пожалуйста, проверьте ссылку.")
-
-            self.bot.send_message(chat_id, response_message)
         else:
             response_message = "Ошибка: Некорректная команда. Пожалуйста, используйте ссылку, предоставленную на сайте для регистрации."
             self.bot.send_message(chat_id, response_message)
 
-    def send_telegram_message(self, client_id, service_request_id, custom_message, order_id=None):
-        # Get the client and service request from the database
-        client = get_object_or_404(Client, pk=client_id)
-        service_request = get_object_or_404(ServiceRequest, pk=service_request_id)
-        chat_id = client.chat_id
 
-        # Build the message content
-        message = f"Здравствуйте, {client.first_name} {client.last_name}!\n"
-        message += custom_message
-
-        if order_id:
-            order = get_object_or_404(Order, pk=order_id)
-            message += f"\n\nДетали заказа:\nУслуга: {order.service.name}\nСтатус: {order.get_status_display()}\n"
-        
-        # Add service request details
-        message += f"\nНомер заявки: {service_request.id}\nДата создания заявки: {service_request.created_at.strftime('%d-%m-%Y')}\n"
-
-        # Send the message using the bot
-        try:
-            self.bot.send_message(chat_id, message)
-        except Exception as e:
-            logging.error(f"Ошибка при отправке сообщения в Telegram: {e}")
-
-# Example usage:
-# bot = TelegramBot()
-# bot.start_bot_polling()
-# bot.send_telegram_message(client_id=1, service_request_id=1, custom_message="Ваши данные для входа на сайт.")
