@@ -33,8 +33,8 @@ except Exception as e:
     logger.error(f"Failed to initialize Telegram bot: {str(e)}")
 
 def home(request):
-    services = Service.objects.all()
-    return render(request, 'web/home.html', {'services': services})
+    services = Service.objects.all()[:6]  # Показываем только первые 6 услуг на главной
+    return render(request, 'web/home_modern.html', {'services': services})
 
 def service_detail(request, pk):
     service = get_object_or_404(Service, pk=pk)
@@ -64,10 +64,10 @@ def blog_post_detail(request, pk):
 
 def services_view(request):
     services = Service.objects.all()
-    return render(request, 'web/services.html', {'services': services})
+    return render(request, 'web/services_modern.html', {'services': services})
 
 def about_view(request):
-    return render(request, 'web/about.html')
+    return render(request, 'web/about_modern.html')
 
 def create_service_request(request, service_id):
     if request.method == 'POST':
@@ -299,3 +299,19 @@ def complete_registration(request, request_id):
         return JsonResponse({'status': 'success', 'message': 'Регистрация успешно завершена.'})
 
     return render(request, 'web/complete_registration.html', {'service_request': service_request})
+
+
+def check_request_status(request, request_id):
+    """API endpoint для проверки статуса подтверждения заявки"""
+    try:
+        service_request = get_object_or_404(ServiceRequest, pk=request_id)
+        return JsonResponse({
+            'is_verified': service_request.is_verified,
+            'chat_id': service_request.chat_id,
+            'created_at': service_request.created_at.isoformat() if service_request.created_at else None
+        })
+    except ServiceRequest.DoesNotExist:
+        return JsonResponse({'error': 'Заявка не найдена'}, status=404)
+    except Exception as e:
+        logger.error(f"Ошибка при проверке статуса заявки {request_id}: {str(e)}")
+        return JsonResponse({'error': 'Ошибка сервера'}, status=500)

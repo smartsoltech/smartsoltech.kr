@@ -1,0 +1,189 @@
+{% load static %}
+<footer class="bg-dark text-light section-padding mt-5">
+    <div class="container-modern">
+        <div class="row g-4">
+            <!-- Company Info -->
+            <div class="col-lg-4 col-md-6">
+                <div class="mb-4">
+                    <h4 class="text-gradient mb-3">
+                        <i class="fas fa-code me-2"></i>
+                        SmartSolTech
+                    </h4>
+                    <p class="text-light opacity-75 mb-4">
+                        Мы создаем инновационные IT-решения, которые помогают бизнесу расти и развиваться в цифровую эпоху.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-outline-light rounded-circle" style="width: 45px; height: 45px;">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-light rounded-circle" style="width: 45px; height: 45px;">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-light rounded-circle" style="width: 45px; height: 45px;">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-light rounded-circle" style="width: 45px; height: 45px;">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="mb-3 text-light">Услуги</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="{% url 'services' %}" class="text-light opacity-75 text-decoration-none hover-primary">
+                            Веб-разработка
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'services' %}" class="text-light opacity-75 text-decoration-none hover-primary">
+                            Мобильные приложения
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'services' %}" class="text-light opacity-75 text-decoration-none hover-primary">
+                            UI/UX Дизайн
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'services' %}" class="text-light opacity-75 text-decoration-none hover-primary">
+                            DevOps
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Company -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="mb-3 text-light">Компания</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="{% url 'about' %}" class="text-light opacity-75 text-decoration-none hover-primary">
+                            О нас
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-light opacity-75 text-decoration-none hover-primary">
+                            Портфолио
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-light opacity-75 text-decoration-none hover-primary">
+                            Команда
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-light opacity-75 text-decoration-none hover-primary">
+                            Карьера
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="col-lg-4 col-md-6">
+                <h5 class="mb-3 text-light">Контакты</h5>
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-envelope me-3 text-primary"></i>
+                        <a href="mailto:info@smartsoltech.kr" class="text-light opacity-75 text-decoration-none hover-primary">
+                            info@smartsoltech.kr
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-phone me-3 text-primary"></i>
+                        <a href="tel:+82-10-XXXX-XXXX" class="text-light opacity-75 text-decoration-none hover-primary">
+                            +82-10-XXXX-XXXX
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-start mb-2">
+                        <i class="fas fa-map-marker-alt me-3 text-primary mt-1"></i>
+                        <span class="text-light opacity-75">
+                            Seoul, South Korea
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="mt-4">
+                    <h6 class="text-light mb-2">Подписаться на новости</h6>
+                    <form class="d-flex">
+                        <input type="email" class="form-control me-2 bg-transparent border-light text-light" 
+                               placeholder="Ваш email" style="border-radius: 10px;">
+                        <button type="submit" class="btn btn-primary-modern">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="my-5 border-light opacity-25">
+        
+        <!-- Copyright -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <p class="mb-0 text-light opacity-75">
+                    © 2025 SmartSolTech. Все права защищены.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <div class="d-md-flex justify-content-md-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <a href="#" class="text-light opacity-75 text-decoration-none hover-primary small">
+                                Политика конфиденциальности
+                            </a>
+                        </li>
+                        <li class="list-inline-item ms-3">
+                            <a href="#" class="text-light opacity-75 text-decoration-none hover-primary small">
+                                Условия использования
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+.hover-primary {
+    transition: all 0.3s ease;
+}
+
+.hover-primary:hover {
+    color: var(--primary-color) !important;
+    opacity: 1 !important;
+}
+
+footer {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="0.5" fill="%236366f1" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+    opacity: 0.3;
+}
+
+footer .container-modern {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-outline-light:hover {
+    background: var(--gradient-primary) !important;
+    border-color: transparent !important;
+    transform: translateY(-2px);
+}
+</style>

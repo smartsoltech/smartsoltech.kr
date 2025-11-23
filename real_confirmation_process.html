@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Реальная проверка подтверждения заявки</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; background: #f8f9fa; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 10px; margin: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .improvement { border-left: 5px solid #28a745; }
+        .process { border-left: 5px solid #007bff; }
+        .technical { border-left: 5px solid #ffc107; }
+        .test { border-left: 5px solid #17a2b8; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        h3 { color: #666; }
+        .emoji { font-size: 1.2em; }
+        .code { background: #f8f9fa; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .success { color: #28a745; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .info { color: #007bff; font-weight: bold; }
+        ul li { margin: 8px 0; }
+        .test-btn { display: inline-block; padding: 12px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 5px; }
+        .test-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">🔄</span> Реальная проверка подтверждения заявки</h1>
+
+        <div class="card improvement">
+            <h2><span class="emoji">✅</span> Исправленная логика</h2>
+            <p class="success">Теперь система корректно ожидает подтверждения от пользователя через Telegram!</p>
+            
+            <h3>Что было неправильно:</h3>
+            <ul>
+                <li>❌ Анимация успеха показывалась сразу после создания заявки</li>
+                <li>❌ Окно закрывалось автоматически через 6 секунд</li>
+                <li>❌ Не учитывалось, что пользователь должен подтвердить в Telegram</li>
+            </ul>
+
+            <h3>Что исправлено:</h3>
+            <ul>
+                <li>✅ QR-код остается на экране до реального подтверждения</li>
+                <li>✅ Система проверяет статус <span class="code">is_verified</span> каждые 3 секунды</li>
+                <li>✅ Анимация успеха появляется только после подтверждения в Telegram</li>
+                <li>✅ Индикатор "Ожидаем подтверждения..." показывает статус</li>
+            </ul>
+        </div>
+
+        <div class="card process">
+            <h2><span class="emoji">🔄</span> Новый процесс (правильный)</h2>
+            
+            <ol>
+                <li><strong>Пользователь заполняет форму</strong> → нажимает "Отправить заявку"</li>
+                <li><strong>Создается заявка</strong> с <span class="code">is_verified = False</span></li>
+                <li><strong>Показывается QR-код</strong> с индикатором ожидания</li>
+                <li class="info"><strong>Система начинает проверку</strong> статуса каждые 3 секунды</li>
+                <li><strong>Пользователь сканирует QR-код</strong> → переходит в Telegram</li>
+                <li><strong>Telegram бот обрабатывает команду</strong> → устанавливает <span class="code">is_verified = True</span></li>
+                <li class="success"><strong>Система обнаруживает подтверждение</strong> → показывает анимацию успеха</li>
+                <li><strong>Окно закрывается</strong> через 3 секунды после подтверждения</li>
+            </ol>
+        </div>
+
+        <div class="card technical">
+            <h2><span class="emoji">🛠️</span> Технические изменения</h2>
+            
+            <h3>Новый API endpoint:</h3>
+            <ul>
+                <li><span class="code">GET /service/check_status/{request_id}/</span></li>
+                <li>Возвращает <span class="code">{"is_verified": boolean, "chat_id": string}</span></li>
+                <li>Используется для polling проверки статуса</li>
+            </ul>
+
+            <h3>JavaScript логика:</h3>
+            <ul>
+                <li><strong>Интервал проверки:</strong> каждые 3 секунды</li>
+                <li><strong>Очистка интервала:</strong> при закрытии модального окна или подтверждении</li>
+                <li><strong>Визуальная обратная связь:</strong> спиннер "Ожидаем подтверждения..."</li>
+            </ul>
+
+            <h3>Обновленные файлы:</h3>
+            <ul>
+                <li><span class="code">web/views.py</span> - добавлен <span class="code">check_request_status</span></li>
+                <li><span class="code">web/urls.py</span> - добавлен URL для проверки статуса</li>
+                <li><span class="code">services_modern.html</span> - обновлен JavaScript и HTML</li>
+            </ul>
+        </div>
+
+        <div class="card test">
+            <h2><span class="emoji">🧪</span> Тестирование</h2>
+            
+            <a href="http://localhost:8000/services/" target="_blank" class="test-btn">
+                <span class="emoji">🛠️</span> Тестировать на странице услуг
+            </a>
+
+            <h3>Сценарий тестирования:</h3>
+            <ol>
+                <li><strong>Откройте страницу услуг</strong> и нажмите "Заказать услугу"</li>
+                <li><strong>Заполните форму</strong> и отправьте</li>
+                <li><strong>Убедитесь, что:</strong>
+                    <ul>
+                        <li>Появился QR-код с кнопкой "Открыть в Telegram"</li>
+                        <li>Показывается "Ожидаем подтверждения в Telegram..."</li>
+                        <li>QR-код остается на экране (не исчезает через 3 секунды)</li>
+                    </ul>
+                </li>
+                <li><strong>Перейдите в Telegram</strong> по QR-коду или ссылке</li>
+                <li><strong>Нажмите "Start"</strong> в боте</li>
+                <li><strong>Вернитесь в браузер</strong> - в течение 3 секунд должна:
+                    <ul>
+                        <li>Появиться анимированная галочка</li>
+                        <li>Показаться "Заявка подтверждена!"</li>
+                        <li>Окно автоматически закроется</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3 class="warning">Что проверить дополнительно:</h3>
+            <ul>
+                <li>🔍 <strong>Без подтверждения:</strong> QR-код должен оставаться на экране бесконечно</li>
+                <li>🔍 <strong>Закрытие окна:</strong> Проверка статуса должна прекращаться</li>
+                <li>🔍 <strong>Повторное открытие:</strong> Форма должна быть сброшена</li>
+            </ul>
+        </div>
+
+        <div class="card improvement">
+            <h2><span class="emoji">🎯</span> Результат</h2>
+            <p class="success">Теперь система корректно работает с реальным подтверждением пользователя через Telegram!</p>
+            
+            <p>Пользователь видит визуальную обратную связь на каждом этапе:</p>
+            <ul>
+                <li>📝 Заполнение формы</li>
+                <li>⏳ Отправка заявки</li>
+                <li>📱 QR-код для Telegram</li>
+                <li>🔄 Ожидание подтверждения</li>
+                <li>✅ Успешное подтверждение</li>
+            </ul>
+
+            <p class="info">Заявка остается в состоянии ожидания до тех пор, пока пользователь не подтвердит её в Telegram боте!</p>
+        </div>
+    </div>
+</body>
+</html>

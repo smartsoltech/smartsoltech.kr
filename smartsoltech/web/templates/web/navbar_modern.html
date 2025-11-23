@@ -1,0 +1,127 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-modern">
+    <div class="container-modern">
+        <a class="navbar-brand-modern" href="{% url 'home' %}">
+            <i class="fas fa-code me-2"></i>
+            SmartSolTech
+        </a>
+        
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link-modern {% if request.resolver_match.url_name == 'home' %}active{% endif %}" 
+                       href="{% url 'home' %}">
+                        <i class="fas fa-home me-2"></i>Главная
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-modern {% if request.resolver_match.url_name == 'services' %}active{% endif %}" 
+                       href="{% url 'services' %}">
+                        <i class="fas fa-cog me-2"></i>Услуги
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-modern {% if request.resolver_match.url_name == 'about' %}active{% endif %}" 
+                       href="{% url 'about' %}">
+                        <i class="fas fa-info-circle me-2"></i>О нас
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-modern" href="#contact">
+                        <i class="fas fa-envelope me-2"></i>Контакты
+                    </a>
+                </li>
+                <li class="nav-item ms-3">
+                    <a class="btn btn-primary-modern" href="{% url 'services' %}">
+                        <i class="fas fa-rocket me-2"></i>Начать проект
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+.navbar-toggler {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none !important;
+}
+
+.navbar-toggler-icon {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-dark);
+    position: relative;
+    transition: all 0.3s ease;
+    margin: auto;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler-icon::before {
+    top: -8px;
+}
+
+.navbar-toggler-icon::after {
+    top: 8px;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+    background-color: transparent;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+    transform: rotate(45deg);
+    top: 0;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    transform: rotate(-45deg);
+    top: 0;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        margin-top: 1rem;
+        padding: 1.5rem;
+        background: var(--bg-light);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+    }
+    
+    .nav-link-modern {
+        padding: 0.75rem 1rem;
+        margin: 0.25rem 0;
+        border-radius: 12px;
+    }
+    
+    .btn-primary-modern {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
