@@ -6,9 +6,8 @@
                 </svg></span><span>SmartSolTech</span></a><button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div id="navcol-5" class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link active" href="/services/">Услуги</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Наши проекты</a></li>
-                <li class="nav-item"><a class="nav-link" href="/about/">О нас</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'services' %}">Услуги</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about_view' %}">О нас</a></li>
             </ul>
         </div>
     </div>

@@ -14,12 +14,35 @@ class TelegramBot:
     def __init__(self):
         # Получение настроек бота из базы данных
         bot_settings = TelegramSettings.objects.first()
-        if bot_settings:
-            TELEGRAM_BOT_TOKEN = bot_settings.bot_token
-            self.bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
-            logging.info("[TelegramBot] Бот инициализирован с токеном.")
+        if bot_settings and bot_settings.bot_token:
+            TELEGRAM_BOT_TOKEN = bot_settings.bot_token.strip()
+            
+            # Проверяем валидность токена
+            if self._validate_token(TELEGRAM_BOT_TOKEN):
+                self.bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+                logging.info(f"[TelegramBot] Бот инициализирован с токеном для {bot_settings.bot_name}.")
+            else:
+                logging.error(f"[TelegramBot] Токен невалиден: {TELEGRAM_BOT_TOKEN[:10]}...")
+                raise Exception(f"Невалидный токен Telegram бота. Обновите токен в базе данных.")
         else:
-            raise Exception("Telegram bot settings not found")
+            raise Exception("Telegram bot settings not found or token is empty")
+
+    def _validate_token(self, token):
+        """Проверяет валидность токена через Telegram API"""
+        url = f"https://api.telegram.org/bot{token}/getMe"
+        try:
+            response = requests.get(url, timeout=10)
+            result = response.json()
+            if result.get('ok'):
+                bot_info = result.get('result', {})
+                logging.info(f"[TelegramBot] Токен валиден. Бот: @{bot_info.get('username', 'unknown')}")
+                return True
+            else:
+                logging.error(f"[TelegramBot] Ошибка Telegram API: {result.get('description', 'Unknown error')}")
+                return False
+        except requests.RequestException as e:
+            logging.error(f"[TelegramBot] Ошибка при проверке токена: {e}")
+            return False
 
     def start_bot_polling(self):
         logging.info("[TelegramBot] Бот начал работу в режиме polling.")
