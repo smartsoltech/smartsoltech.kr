@@ -33,8 +33,8 @@ except Exception as e:
     logger.error(f"Failed to initialize Telegram bot: {str(e)}")
 
 def home(request):
-    services = Service.objects.all()
-    return render(request, 'web/home.html', {'services': services})
+    services = Service.objects.all()[:6]  # Показываем только первые 6 услуг на главной
+    return render(request, 'web/home_modern.html', {'services': services})
 
 def service_detail(request, pk):
     service = get_object_or_404(Service, pk=pk)
@@ -64,10 +64,10 @@ def blog_post_detail(request, pk):
 
 def services_view(request):
     services = Service.objects.all()
-    return render(request, 'web/services.html', {'services': services})
+    return render(request, 'web/services_modern.html', {'services': services})
 
 def about_view(request):
-    return render(request, 'web/about.html')
+    return render(request, 'web/about_modern.html')
 
 def create_service_request(request, service_id):
     if request.method == 'POST':

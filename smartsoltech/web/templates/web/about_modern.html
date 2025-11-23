@@ -1,0 +1,556 @@
+{% extends 'web/base_modern.html' %}
+{% load static %}
+{% block title %}О нас - SmartSolTech{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-modern">
+    <div class="container-modern">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="badge bg-gradient text-white mb-3 px-3 py-2 rounded-pill">
+                    🚀 О нас
+                </span>
+                <h1 class="display-4 fw-bold mb-4">
+                    Мы создаем <span class="text-gradient">цифровое будущее</span>
+                </h1>
+                <p class="lead text-muted mb-4">
+                    SmartSolTech - это команда профессионалов, которые превращают идеи в инновационные IT-решения. 
+                    Мы помогаем бизнесу расти и развиваться в цифровую эпоху.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#team" class="btn btn-primary-modern">
+                        <i class="fas fa-users me-2"></i>
+                        Наша команда
+                    </a>
+                    <a href="#contact" class="btn btn-secondary-modern">
+                        <i class="fas fa-envelope me-2"></i>
+                        Связаться с нами
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <div class="position-relative">
+                        <!-- Company illustration -->
+                        <div class="about-graphic">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="stat-card bg-white rounded-4 p-4 shadow animate-float">
+                                        <div class="stat-icon bg-primary rounded-3 mb-3 mx-auto" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-code text-white fa-2x"></i>
+                                        </div>
+                                        <h3 class="text-gradient fw-bold">50+</h3>
+                                        <p class="mb-0 text-muted">Проектов</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-card bg-white rounded-4 p-4 shadow animate-float" style="animation-delay: 0.5s;">
+                                        <div class="stat-icon bg-success rounded-3 mb-3 mx-auto" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-users text-white fa-2x"></i>
+                                        </div>
+                                        <h3 class="text-gradient fw-bold">30+</h3>
+                                        <p class="mb-0 text-muted">Клиентов</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-card bg-white rounded-4 p-4 shadow animate-float" style="animation-delay: 1s;">
+                                        <div class="stat-icon bg-warning rounded-3 mb-3 mx-auto" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-award text-white fa-2x"></i>
+                                        </div>
+                                        <h3 class="text-gradient fw-bold">3+</h3>
+                                        <p class="mb-0 text-muted">Лет опыта</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-card bg-white rounded-4 p-4 shadow animate-float" style="animation-delay: 1.5s;">
+                                        <div class="stat-icon bg-info rounded-3 mb-3 mx-auto" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-rocket text-white fa-2x"></i>
+                                        </div>
+                                        <h3 class="text-gradient fw-bold">24/7</h3>
+                                        <p class="mb-0 text-muted">Поддержка</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section-padding bg-light">
+    <div class="container-modern">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="pe-lg-4">
+                    <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">
+                        🎯 Наша миссия
+                    </span>
+                    <h2 class="display-6 fw-bold mb-4">
+                        Делаем технологии <span class="text-gradient">доступными</span>
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Мы верим, что каждый бизнес заслуживает доступа к современным технологиям. 
+                        Наша миссия — демократизировать IT-решения и помочь компаниям любого размера 
+                        достичь цифрового совершенства.
+                    </p>
+                    <div class="mission-points">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <h6>Инновационные решения</h6>
+                                <p class="text-muted mb-0 small">Используем передовые технологии для создания уникальных продуктов</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <h6>Клиентоориентированность</h6>
+                                <p class="text-muted mb-0 small">Фокусируемся на потребностях и целях каждого клиента</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <h6>Непрерывное развитие</h6>
+                                <p class="text-muted mb-0 small">Постоянно совершенствуем наши навыки и знания</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ps-lg-4">
+                    <span class="badge bg-secondary text-white mb-3 px-3 py-2 rounded-pill">
+                        🔮 Наше видение
+                    </span>
+                    <h2 class="display-6 fw-bold mb-4">
+                        Будущее начинается <span class="text-gradient">сегодня</span>
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Мы стремимся стать ведущей IT-компанией в Корее, известной своими инновационными решениями, 
+                        высоким качеством сервиса и способностью трансформировать бизнес-идеи в успешные цифровые продукты.
+                    </p>
+                    
+                    <!-- Progress bars -->
+                    <div class="skills-progress">
+                        <div class="skill-item mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-semibold">Веб-разработка</span>
+                                <span class="text-muted">95%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-gradient" role="progressbar" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-semibold">Мобильная разработка</span>
+                                <span class="text-muted">90%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-gradient" role="progressbar" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-semibold">UI/UX Дизайн</span>
+                                <span class="text-muted">85%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-gradient" role="progressbar" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-semibold">DevOps</span>
+                                <span class="text-muted">80%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-gradient" role="progressbar" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="section-padding" id="team">
+    <div class="container-modern">
+        <div class="text-center mb-5">
+            <span class="badge bg-gradient text-white mb-3 px-3 py-2 rounded-pill">
+                👥 Команда
+            </span>
+            <h2 class="display-5 fw-bold mb-3">
+                Познакомьтесь с <span class="text-gradient">нашей командой</span>
+            </h2>
+            <p class="lead text-muted max-width-600 mx-auto">
+                Талантливые профессионалы, которые воплощают ваши идеи в реальность
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Team Member 1 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card-modern text-center h-100">
+                    <div class="position-relative">
+                        <div class="team-avatar mx-auto mb-3" style="width: 120px; height: 120px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user text-white fa-3x"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-2">Алексей Чой</h5>
+                        <p class="text-primary mb-3">CEO & Founder</p>
+                        <p class="text-muted small mb-3">
+                            Визионер и лидер команды с более чем 5-летним опытом в IT-индустрии. 
+                            Специализируется на стратегическом планировании и управлении проектами.
+                        </p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-telegram-plane"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team Member 2 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card-modern text-center h-100">
+                    <div class="position-relative">
+                        <div class="team-avatar mx-auto mb-3" style="width: 120px; height: 120px; background: var(--gradient-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user text-white fa-3x"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-2">Анна Ким</h5>
+                        <p class="text-success mb-3">Lead Developer</p>
+                        <p class="text-muted small mb-3">
+                            Опытный full-stack разработчик со страстью к созданию масштабируемых 
+                            и эффективных веб-приложений. Эксперт в React, Django и cloud технологиях.
+                        </p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team Member 3 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card-modern text-center h-100">
+                    <div class="position-relative">
+                        <div class="team-avatar mx-auto mb-3" style="width: 120px; height: 120px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user text-white fa-3x"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-2">Дмитрий Пак</h5>
+                        <p class="text-warning mb-3">UI/UX Designer</p>
+                        <p class="text-muted small mb-3">
+                            Креативный дизайнер, создающий интуитивные и привлекательные пользовательские интерфейсы. 
+                            Специализируется на UX-исследованиях и современном веб-дизайне.
+                        </p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-dribbble"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-behance"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technologies Section -->
+<section class="section-padding bg-light">
+    <div class="container-modern">
+        <div class="text-center mb-5">
+            <span class="badge bg-gradient text-white mb-3 px-3 py-2 rounded-pill">
+                ⚡ Технологии
+            </span>
+            <h2 class="display-6 fw-bold mb-3">
+                Современный <span class="text-gradient">технологический стек</span>
+            </h2>
+            <p class="lead text-muted">
+                Мы используем проверенные и инновационные технологии для создания качественных решений
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Frontend -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <h5 class="mb-3">Frontend</h5>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <div class="tech-icon">
+                            <i class="fab fa-react text-info fa-2x"></i>
+                            <small class="d-block mt-1">React</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-vue text-success fa-2x"></i>
+                            <small class="d-block mt-1">Vue.js</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-html5 text-danger fa-2x"></i>
+                            <small class="d-block mt-1">HTML5</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-css3-alt text-primary fa-2x"></i>
+                            <small class="d-block mt-1">CSS3</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Backend -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <h5 class="mb-3">Backend</h5>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <div class="tech-icon">
+                            <i class="fab fa-python text-warning fa-2x"></i>
+                            <small class="d-block mt-1">Python</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fas fa-server text-success fa-2x"></i>
+                            <small class="d-block mt-1">Django</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-node-js text-success fa-2x"></i>
+                            <small class="d-block mt-1">Node.js</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fas fa-database text-info fa-2x"></i>
+                            <small class="d-block mt-1">PostgreSQL</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <h5 class="mb-3">Mobile</h5>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <div class="tech-icon">
+                            <i class="fab fa-react text-info fa-2x"></i>
+                            <small class="d-block mt-1">React Native</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-android text-success fa-2x"></i>
+                            <small class="d-block mt-1">Android</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-apple text-dark fa-2x"></i>
+                            <small class="d-block mt-1">iOS</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fas fa-mobile-alt text-primary fa-2x"></i>
+                            <small class="d-block mt-1">Flutter</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- DevOps -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <h5 class="mb-3">DevOps</h5>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <div class="tech-icon">
+                            <i class="fab fa-docker text-primary fa-2x"></i>
+                            <small class="d-block mt-1">Docker</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-aws text-warning fa-2x"></i>
+                            <small class="d-block mt-1">AWS</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fab fa-github text-dark fa-2x"></i>
+                            <small class="d-block mt-1">GitHub</small>
+                        </div>
+                        <div class="tech-icon">
+                            <i class="fas fa-cogs text-secondary fa-2x"></i>
+                            <small class="d-block mt-1">CI/CD</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section-padding bg-gradient text-white" id="contact">
+    <div class="container-modern">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold mb-4">
+                Начнем сотрудничество?
+            </h2>
+            <p class="lead opacity-90 mb-5">
+                Свяжитесь с нами для обсуждения вашего проекта
+            </p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <div class="col-md-4 text-center">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope fa-2x mb-3 opacity-75"></i>
+                            <h5>Email</h5>
+                            <a href="mailto:info@smartsoltech.kr" class="text-white text-decoration-none opacity-75">
+                                info@smartsoltech.kr
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="contact-item">
+                            <i class="fas fa-phone fa-2x mb-3 opacity-75"></i>
+                            <h5>Телефон</h5>
+                            <a href="tel:+82-10-XXXX-XXXX" class="text-white text-decoration-none opacity-75">
+                                +82-10-XXXX-XXXX
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="contact-item">
+                            <i class="fab fa-telegram-plane fa-2x mb-3 opacity-75"></i>
+                            <h5>Telegram</h5>
+                            <a href="https://t.me/smartsoltech" class="text-white text-decoration-none opacity-75">
+                                @smartsoltech
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <a href="{% url 'services' %}" class="btn btn-light btn-lg text-primary">
+                        <i class="fas fa-rocket me-2"></i>
+                        Начать проект
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bars when they come into view
+    const observerOptions = {
+        threshold: 0.5
+    };
+
+    const progressObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const progressBars = entry.target.querySelectorAll('.progress-bar');
+                progressBars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 200);
+                });
+            }
+        });
+    }, observerOptions);
+
+    const skillsSection = document.querySelector('.skills-progress');
+    if (skillsSection) {
+        progressObserver.observe(skillsSection);
+    }
+    
+    // Animate stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.classList.add('animate-fade-in-up');
+        }, index * 200);
+    });
+});
+</script>
+
+<style>
+.max-width-600 {
+    max-width: 600px;
+}
+
+.tech-icon {
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--bg-light);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.tech-icon:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    transition: width 1.5s ease-in-out;
+}
+
+.contact-item {
+    padding: 2rem 1rem;
+}
+
+.contact-item:hover i {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+.team-avatar {
+    transition: all 0.3s ease;
+}
+
+.card-modern:hover .team-avatar {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .about-graphic .row {
+        justify-content: center;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .tech-icon {
+        margin: 0.25rem;
+        padding: 0.75rem;
+    }
+}
+</style>
+{% endblock %}

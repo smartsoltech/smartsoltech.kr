@@ -1,0 +1,370 @@
+{% extends 'web/base_modern.html' %}
+{% load static %}
+{% block title %}SmartSolTech - Современные IT-решения для вашего бизнеса{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-modern" id="home">
+    <div class="container-modern">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="animate-fade-in-up">
+                    <span class="badge bg-gradient text-white mb-3 px-3 py-2 rounded-pill fs-6">
+                        🚀 Инновационные IT-решения
+                    </span>
+                    <h1 class="display-3 fw-bold mb-4">
+                        Создаем <span class="text-gradient">будущее</span> вашего бизнеса
+                    </h1>
+                    <p class="lead mb-4 text-muted">
+                        Мы разрабатываем современные веб-приложения, мобильные решения и системы автоматизации, 
+                        которые помогают компаниям расти и быть конкурентоспособными.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mb-5">
+                        <a href="{% url 'services' %}" class="btn btn-primary-modern btn-lg">
+                            <i class="fas fa-rocket me-2"></i>
+                            Начать проект
+                        </a>
+                        <a href="{% url 'about' %}" class="btn btn-secondary-modern btn-lg">
+                            <i class="fas fa-play-circle me-2"></i>
+                            Узнать больше
+                        </a>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <h3 class="text-gradient fw-bold mb-1">50+</h3>
+                                <p class="small text-muted mb-0">Проектов</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <h3 class="text-gradient fw-bold mb-1">3+</h3>
+                                <p class="small text-muted mb-0">Лет опыта</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <h3 class="text-gradient fw-bold mb-1">24/7</h3>
+                                <p class="small text-muted mb-0">Поддержка</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center animate-float">
+                    <div class="position-relative">
+                        <!-- 3D Graphic Placeholder -->
+                        <div class="hero-graphic p-5">
+                            <div class="position-relative">
+                                <!-- Code Window -->
+                                <div class="code-window bg-dark rounded-4 p-4 mb-4 shadow-lg" 
+                                     style="transform: rotate(-5deg); max-width: 400px;">
+                                    <div class="d-flex gap-2 mb-3">
+                                        <div class="rounded-circle bg-danger" style="width: 12px; height: 12px;"></div>
+                                        <div class="rounded-circle bg-warning" style="width: 12px; height: 12px;"></div>
+                                        <div class="rounded-circle bg-success" style="width: 12px; height: 12px;"></div>
+                                    </div>
+                                    <div class="text-light font-monospace small">
+                                        <div class="text-info">def create_future():</div>
+                                        <div class="ms-3 text-success">return innovation + passion</div>
+                                        <div class="text-warning">// SmartSolTech</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mobile App Preview -->
+                                <div class="mobile-preview bg-light rounded-4 p-3 shadow-lg position-absolute" 
+                                     style="transform: rotate(10deg); top: 50px; right: 50px; width: 200px;">
+                                    <div class="bg-gradient rounded-3 p-3 text-white text-center">
+                                        <i class="fas fa-mobile-alt fa-3x mb-2"></i>
+                                        <h6 class="mb-1">Мобильные</h6>
+                                        <p class="small mb-0 opacity-75">приложения</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Floating Icons -->
+                                <div class="floating-icon position-absolute" 
+                                     style="top: 20px; left: 20px; animation: float 2s ease-in-out infinite;">
+                                    <div class="bg-primary rounded-3 p-3 text-white shadow">
+                                        <i class="fab fa-react fa-2x"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="floating-icon position-absolute" 
+                                     style="bottom: 100px; left: 100px; animation: float 3s ease-in-out infinite reverse;">
+                                    <div class="bg-success rounded-3 p-3 text-white shadow">
+                                        <i class="fab fa-python fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Preview Section -->
+<section class="section-padding bg-light">
+    <div class="container-modern">
+        <div class="text-center mb-5">
+            <span class="badge bg-gradient text-white mb-3 px-3 py-2 rounded-pill">
+                ⚡ Наши услуги
+            </span>
+            <h2 class="display-5 fw-bold mb-3">
+                Полный спектр <span class="text-gradient">IT-услуг</span>
+            </h2>
+            <p class="lead text-muted max-width-600 mx-auto">
+                От идеи до реализации - мы предоставляем комплексные решения для вашего цифрового успеха
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            {% for service in services %}
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-{% cycle 'code' 'mobile-alt' 'paint-brush' 'server' 'chart-line' 'shield-alt' %}"></i>
+                </div>
+                <h4 class="mb-3">{{ service.name }}</h4>
+                <p class="text-muted mb-4">{{ service.description|truncatewords:20 }}</p>
+                <a href="{% url 'service_detail' service.pk %}" class="btn btn-outline-primary">
+                    Подробнее <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'services' %}" class="btn btn-primary-modern btn-lg">
+                <i class="fas fa-th-large me-2"></i>
+                Все услуги
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="section-padding">
+    <div class="container-modern">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="pe-lg-5">
+                    <span class="badge bg-gradient text-white mb-3 px-3 py-2 rounded-pill">
+                        🎯 Почему мы
+                    </span>
+                    <h2 class="display-6 fw-bold mb-4">
+                        Ваш надежный <span class="text-gradient">IT-партнер</span>
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Мы не просто выполняем проекты - мы создаем долгосрочные партнерские отношения 
+                        и помогаем бизнесу расти с помощью технологий.
+                    </p>
+                    
+                    <div class="feature-list">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="feature-icon bg-primary rounded-3 p-2 me-3 text-white">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-2">Быстрая разработка</h5>
+                                <p class="text-muted mb-0">Agile-методология и современные инструменты для быстрой доставки результата</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="feature-icon bg-success rounded-3 p-2 me-3 text-white">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-2">Высокое качество</h5>
+                                <p class="text-muted mb-0">Тщательное тестирование и code review обеспечивают надежность решений</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="feature-icon bg-warning rounded-3 p-2 me-3 text-white">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-2">24/7 Поддержка</h5>
+                                <p class="text-muted mb-0">Постоянная техническая поддержка и сопровождение проектов</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <!-- Process Steps -->
+                    <div class="process-steps">
+                        <div class="step-card active bg-white rounded-4 p-4 shadow mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="step-number bg-primary text-white rounded-circle me-3" 
+                                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    1
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Анализ требований</h6>
+                                    <p class="small text-muted mb-0">Детальное изучение ваших потребностей</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-card bg-white rounded-4 p-4 shadow mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="step-number bg-secondary text-white rounded-circle me-3" 
+                                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    2
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Проектирование</h6>
+                                    <p class="small text-muted mb-0">Создание архитектуры и дизайна</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-card bg-white rounded-4 p-4 shadow mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="step-number bg-success text-white rounded-circle me-3" 
+                                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    3
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Разработка</h6>
+                                    <p class="small text-muted mb-0">Программирование и тестирование</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-card bg-white rounded-4 p-4 shadow">
+                            <div class="d-flex align-items-center">
+                                <div class="step-number bg-warning text-white rounded-circle me-3" 
+                                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    4
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Запуск и поддержка</h6>
+                                    <p class="small text-muted mb-0">Деплой и техническая поддержка</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section-padding bg-gradient text-white">
+    <div class="container-modern text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="display-6 fw-bold mb-4">
+                    Готовы начать свой проект?
+                </h2>
+                <p class="lead mb-5 opacity-90">
+                    Свяжитесь с нами сегодня и получите бесплатную консультацию по вашему проекту
+                </p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <a href="{% url 'services' %}" class="btn btn-light btn-lg text-primary">
+                        <i class="fas fa-comments me-2"></i>
+                        Получить консультацию
+                    </a>
+                    <a href="tel:+82-10-XXXX-XXXX" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>
+                        Позвонить сейчас
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate elements on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in-up');
+            }
+        });
+    }, observerOptions);
+
+    // Observe service cards
+    document.querySelectorAll('.service-card, .step-card').forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
+
+<style>
+.max-width-600 {
+    max-width: 600px;
+}
+
+.hero-graphic {
+    perspective: 1000px;
+}
+
+.code-window {
+    transform-style: preserve-3d;
+}
+
+.floating-icon {
+    animation-delay: 1s;
+}
+
+.step-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.step-card.animate-fade-in-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .hero-graphic {
+        margin-top: 2rem;
+    }
+    
+    .code-window {
+        transform: rotate(0deg) !important;
+        max-width: 100% !important;
+    }
+    
+    .mobile-preview {
+        position: relative !important;
+        transform: rotate(0deg) !important;
+        margin-top: 1rem;
+        width: 100% !important;
+    }
+    
+    .floating-icon {
+        position: relative !important;
+        display: inline-block;
+        margin: 0.5rem;
+    }
+}
+</style>
+{% endblock %}

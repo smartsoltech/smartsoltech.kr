@@ -1,0 +1,18 @@
+{
+    "short_name": "sst",
+    "name": "Smartsoltech",
+    "icons": [
+      {
+        "src": "/static/img/photo_2024-10-06_10-06-08.jpg",
+        "type": "image/jpeg",
+        "sizes": "1011x702"
+      },
+      {
+        "src": "/static/img/photo_2024-10-06_10-06-08.jpg",
+        "type": "image/jpeg",
+        "sizes": "1011x702"
+      }
+    ],
+    "start_url": "/",
+    "display": "fullscreen"
+  }
