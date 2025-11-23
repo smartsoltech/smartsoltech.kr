@@ -51,7 +51,13 @@
             <div class="col-lg-4 col-md-6 service-item" data-category="{{ service.category.name|lower }}">
                 <div class="card-modern h-100">
                     <div class="position-relative overflow-hidden" style="height: 200px;">
-                        <img src="{{ service.image.url }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ service.name }}">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ service.name }}">
+                        {% else %}
+                            <div class="w-100 h-100 bg-gradient d-flex align-items-center justify-content-center">
+                                <i class="fas fa-cogs text-white" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
                         <div class="position-absolute top-0 start-0 p-3">
                             <span class="badge bg-primary">{{ service.category.name }}</span>
                         </div>
@@ -296,6 +302,42 @@
                         </div>
                     </div>
                     
+                    <!-- QR Code Section (Hidden by default) -->
+                    <div class="mt-4" id="qrCodeSection" style="display: none;">
+                        <div class="alert alert-info text-center">
+                            <h6><i class="fas fa-qrcode me-2"></i>Завершите регистрацию через Telegram</h6>
+                            <p class="mb-3">Отсканируйте QR-код или перейдите по ссылке для подтверждения заявки:</p>
+                            <div class="d-flex justify-content-center mb-3">
+                                <img id="qrCodeImage" src="" alt="QR Code" class="img-fluid border rounded" style="max-width: 200px; min-width: 200px; height: 200px; object-fit: contain; display: none;">
+                            </div>
+                            <div class="mb-3">
+                                <a id="telegramLink" href="" target="_blank" class="btn btn-info">
+                                    <i class="fab fa-telegram-plane me-2"></i>Открыть в Telegram
+                                </a>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status" aria-hidden="true"></div>
+                                <small class="text-muted">Ожидаем подтверждения в Telegram...</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success Animation Section (Hidden by default) -->
+                    <div class="mt-4" id="successSection" style="display: none;">
+                        <div class="text-center py-5">
+                            <div class="success-checkmark">
+                                <div class="check-icon">
+                                    <span class="icon-line line-tip"></span>
+                                    <span class="icon-line line-long"></span>
+                                    <div class="icon-circle"></div>
+                                    <div class="icon-fix"></div>
+                                </div>
+                            </div>
+                            <h4 class="text-success mt-3 mb-2">Заявка подана успешно!</h4>
+                            <p class="text-muted">Мы свяжемся с вами в ближайшее время</p>
+                        </div>
+                    </div>
+                    
                     <div class="mt-4">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="agreeTerms" required>
@@ -374,28 +416,107 @@ document.getElementById('serviceRequestForm').addEventListener('submit', functio
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Отправляем...';
     submitBtn.disabled = true;
     
-    // Simulate form submission (replace with actual AJAX call)
-    setTimeout(() => {
-        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Отправлено!';
-        submitBtn.classList.remove('btn-primary-modern');
-        submitBtn.classList.add('btn-success');
+    // Получаем CSRF токен
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Подготавливаем данные для отправки
+    const serviceId = document.getElementById('serviceId').value;
+    const requestData = {
+        client_name: formData.get('first_name') + ' ' + formData.get('last_name'),
+        client_email: formData.get('email'),
+        client_phone: formData.get('phone') || '',
+        description: formData.get('description'),
+        budget: formData.get('budget') || '',
+        timeline: formData.get('timeline') || ''
+    };
+    
+    // Отправляем запрос на создание QR-кода
+    fetch(`/service/generate_qr_code/${serviceId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.qr_code_url) {
+            // Показываем секцию с QR-кодом
+            const qrSection = document.getElementById('qrCodeSection');
+            const qrImage = document.getElementById('qrCodeImage');
+            const telegramLink = document.getElementById('telegramLink');
+            
+            qrImage.src = data.qr_code_url;
+            qrImage.style.display = 'block';
+            telegramLink.href = data.registration_link;
+            qrSection.style.display = 'block';
+            
+            // Обновляем кнопку
+            submitBtn.innerHTML = '<i class="fas fa-telegram-plane me-2"></i>Перейдите в Telegram для подтверждения';
+            submitBtn.disabled = true;
+            
+            // Начинаем проверку статуса подтверждения
+            const serviceRequestId = data.service_request_id;
+            confirmationCheckInterval = setInterval(() => {
+                checkConfirmationStatus(serviceRequestId, confirmationCheckInterval);
+            }, 3000); // Проверяем каждые 3 секунды
+            
+        } else {
+            throw new Error(data.error || 'Ошибка при создании заявки');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        submitBtn.innerHTML = originalContent;
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-success');
+        submitBtn.classList.add('btn-primary-modern');
         
-        setTimeout(() => {
-            const modal = bootstrap.Modal.getInstance(document.getElementById('serviceModal'));
-            modal.hide();
-            
-            // Reset form and button
-            this.reset();
-            submitBtn.innerHTML = originalContent;
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('btn-success');
-            submitBtn.classList.add('btn-primary-modern');
-            
-            // Show success notification
-            showNotification('Заявка отправлена! Мы свяжемся с вами в ближайшее время.', 'success');
-        }, 2000);
-    }, 2000);
+        showNotification('Произошла ошибка при создании заявки. Попробуйте еще раз.', 'error');
+    });
 });
+
+// Функция проверки статуса подтверждения
+function checkConfirmationStatus(serviceRequestId, checkInterval) {
+    fetch(`/service/check_status/${serviceRequestId}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.is_verified) {
+            // Останавливаем проверку
+            clearInterval(checkInterval);
+            
+            // Скрываем QR-код
+            const qrSection = document.getElementById('qrCodeSection');
+            qrSection.style.display = 'none';
+            
+            // Показываем анимацию успеха
+            const successSection = document.getElementById('successSection');
+            successSection.style.display = 'block';
+            
+            // Запускаем анимацию галочки
+            setTimeout(() => {
+                const checkmark = successSection.querySelector('.success-checkmark');
+                checkmark.classList.add('animate');
+            }, 100);
+            
+            // Закрываем модальное окно через 3 секунды
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('serviceModal'));
+                modal.hide();
+                showNotification('Заявка подтверждена! Спасибо за регистрацию в Telegram.', 'success');
+            }, 3000);
+        }
+    })
+    .catch(error => {
+        console.log('Ожидаем подтверждения...', error);
+    });
+}
 
 function showNotification(message, type) {
     const notification = document.createElement('div');
@@ -413,6 +534,38 @@ function showNotification(message, type) {
         notification.remove();
     }, 5000);
 }
+
+// Reset modal when it's hidden
+let confirmationCheckInterval = null;
+
+document.getElementById('serviceModal').addEventListener('hidden.bs.modal', function() {
+    // Останавливаем проверку подтверждения
+    if (confirmationCheckInterval) {
+        clearInterval(confirmationCheckInterval);
+        confirmationCheckInterval = null;
+    }
+    
+    // Сброс формы
+    document.getElementById('serviceRequestForm').reset();
+    
+    // Скрытие всех секций
+    document.getElementById('qrCodeSection').style.display = 'none';
+    document.getElementById('qrCodeImage').style.display = 'none';
+    document.getElementById('successSection').style.display = 'none';
+    
+    // Убираем анимацию галочки
+    const checkmark = document.querySelector('.success-checkmark');
+    if (checkmark) {
+        checkmark.classList.remove('animate');
+    }
+    
+    // Сброс кнопки отправки
+    const submitBtn = document.querySelector('button[type="submit"][form="serviceRequestForm"]');
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить заявку';
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('btn-success');
+    submitBtn.classList.add('btn-primary-modern');
+});
 </script>
 
 <style>

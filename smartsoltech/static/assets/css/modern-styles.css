@@ -363,6 +363,15 @@ p {
 }
 
 /* Loading Animation */
+#loading-screen {
+  transition: opacity 0.3s ease-out;
+}
+
+#loading-screen.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .loading-spinner {
   width: 40px;
   height: 40px;
@@ -375,4 +384,143 @@ p {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Success Checkmark Animation */
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #4CAF50;
+  stroke-miterlimit: 10;
+  margin: 10px auto;
+  position: relative;
+}
+
+.success-checkmark.animate .icon-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #4CAF50;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark.animate .icon-line {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+.success-checkmark.animate .icon-line.line-tip {
+  animation-delay: 1.1s;
+}
+
+.success-checkmark.animate .icon-line.line-long {
+  animation-delay: 1.2s;
+}
+
+.success-checkmark .icon-circle {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.success-checkmark .icon-line {
+  height: 2px;
+  background-color: #4CAF50;
+  display: block;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 10;
+}
+
+.success-checkmark .icon-line.line-tip {
+  top: 46px;
+  left: 14px;
+  width: 25px;
+  transform: rotate(45deg);
+  animation: icon-line-tip 0.75s;
+}
+
+.success-checkmark .icon-line.line-long {
+  top: 38px;
+  right: 8px;
+  width: 47px;
+  transform: rotate(-45deg);
+  animation: icon-line-long 0.75s;
+}
+
+.success-checkmark .icon-fix {
+  top: 8px;
+  width: 5px;
+  left: 26px;
+  z-index: 1;
+  height: 85px;
+  position: absolute;
+  transform: rotate(-45deg);
+  background-color: #fff;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes icon-line-tip {
+  0% { 
+    width: 0; 
+    left: 1px; 
+    top: 19px; 
+  }
+  54% { 
+    width: 0; 
+    left: 1px; 
+    top: 19px; 
+  }
+  70% { 
+    width: 50px; 
+    left: -8px; 
+    top: 37px; 
+  }
+  84% { 
+    width: 17px; 
+    left: 21px; 
+    top: 48px; 
+  }
+  100% { 
+    width: 25px; 
+    left: 14px; 
+    top: 45px; 
+  }
+}
+
+@keyframes icon-line-long {
+  0% { 
+    width: 0; 
+    right: 46px; 
+    top: 54px; 
+  }
+  65% { 
+    width: 0; 
+    right: 46px; 
+    top: 54px; 
+  }
+  84% { 
+    width: 55px; 
+    right: 0px; 
+    top: 35px; 
+  }
+  100% { 
+    width: 47px; 
+    right: 8px; 
+    top: 38px; 
+  }
 }

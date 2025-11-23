@@ -299,3 +299,19 @@ def complete_registration(request, request_id):
         return JsonResponse({'status': 'success', 'message': 'Регистрация успешно завершена.'})
 
     return render(request, 'web/complete_registration.html', {'service_request': service_request})
+
+
+def check_request_status(request, request_id):
+    """API endpoint для проверки статуса подтверждения заявки"""
+    try:
+        service_request = get_object_or_404(ServiceRequest, pk=request_id)
+        return JsonResponse({
+            'is_verified': service_request.is_verified,
+            'chat_id': service_request.chat_id,
+            'created_at': service_request.created_at.isoformat() if service_request.created_at else None
+        })
+    except ServiceRequest.DoesNotExist:
+        return JsonResponse({'error': 'Заявка не найдена'}, status=404)
+    except Exception as e:
+        logger.error(f"Ошибка при проверке статуса заявки {request_id}: {str(e)}")
+        return JsonResponse({'error': 'Ошибка сервера'}, status=500)
