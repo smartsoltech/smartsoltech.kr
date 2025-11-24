@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование QR-кода для заявок</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        .section { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .instructions { background: #f8f9fa; }
+        .test-case { background: #e7f3ff; }
+        .success { background: #d4edda; }
+        .warning { background: #fff3cd; }
+        h2 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        h3 { color: #666; }
+        .step { margin: 10px 0; padding: 10px; background: white; border-radius: 4px; }
+        .link { color: #007bff; text-decoration: none; font-weight: bold; }
+        .link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Тестирование QR-кода и Telegram бота SmartSolTech</h1>
+
+    <div class="section instructions">
+        <h2>📋 Инструкции для тестирования</h2>
+        <p><strong>Что мы добавили:</strong></p>
+        <ul>
+            <li>✅ QR-код генерацию в модальном окне заявок</li>
+            <li>✅ Интеграция с Telegram ботом</li>
+            <li>✅ Автоматическое создание заявки через форму</li>
+            <li>✅ Подтверждение регистрации через Telegram</li>
+        </ul>
+    </div>
+
+    <div class="section test-case">
+        <h2>🔍 Тест-кейс 1: Создание заявки через модальное окно</h2>
+        <div class="step">
+            <h3>Шаг 1:</h3>
+            <p>Перейдите на страницу услуг: <a href="http://localhost:8000/services/" class="link" target="_blank">http://localhost:8000/services/</a></p>
+        </div>
+        <div class="step">
+            <h3>Шаг 2:</h3>
+            <p>Нажмите кнопку <strong>"Заказать услугу"</strong> под любой услугой</p>
+        </div>
+        <div class="step">
+            <h3>Шаг 3:</h3>
+            <p>Заполните форму в модальном окне:</p>
+            <ul>
+                <li>Имя: Тест</li>
+                <li>Фамилия: Пользователь</li>
+                <li>Email: test@example.com</li>
+                <li>Телефон: +7-123-456-7890</li>
+                <li>Описание: Тестовая заявка на услугу</li>
+            </ul>
+        </div>
+        <div class="step">
+            <h3>Шаг 4:</h3>
+            <p>Поставьте галочку согласия и нажмите <strong>"Отправить заявку"</strong></p>
+        </div>
+        <div class="step">
+            <h3>Ожидаемый результат:</h3>
+            <p>✅ Должен появиться QR-код для Telegram</p>
+            <p>✅ Кнопка "Открыть в Telegram" должна работать</p>
+        </div>
+    </div>
+
+    <div class="section test-case">
+        <h2>🤖 Тест-кейс 2: Подтверждение через Telegram бота</h2>
+        <div class="step">
+            <h3>Шаг 1:</h3>
+            <p>Отсканируйте QR-код телефоном или нажмите кнопку "Открыть в Telegram"</p>
+        </div>
+        <div class="step">
+            <h3>Шаг 2:</h3>
+            <p>Бот должен отправить команду /start с параметрами заявки</p>
+        </div>
+        <div class="step">
+            <h3>Шаг 3:</h3>
+            <p>Нажмите "Start" в Telegram</p>
+        </div>
+        <div class="step">
+            <h3>Ожидаемый результат:</h3>
+            <p>✅ Бот приветствует и подтверждает регистрацию</p>
+            <p>✅ Заявка получает статус "подтверждена"</p>
+            <p>✅ Клиент связывается с chat_id пользователя</p>
+        </div>
+    </div>
+
+    <div class="section warning">
+        <h2>⚠️ Возможные проблемы</h2>
+        <ul>
+            <li><strong>QR-код не генерируется:</strong> Проверьте настройки Telegram бота в админке</li>
+            <li><strong>Telegram бот не отвечает:</strong> Проверьте токен бота и что сервис telegram_bot запущен</li>
+            <li><strong>Ошибка 500:</strong> Проверьте логи Django в консоли Docker</li>
+            <li><strong>Ссылки не работают:</strong> Убедитесь, что JavaScript загружается корректно</li>
+        </ul>
+    </div>
+
+    <div class="section success">
+        <h2>📱 Быстрые ссылки для тестирования</h2>
+        <p><a href="http://localhost:8000/" class="link" target="_blank">🏠 Главная страница</a></p>
+        <p><a href="http://localhost:8000/services/" class="link" target="_blank">🛠️ Страница услуг (тестируем здесь)</a></p>
+        <p><a href="http://localhost:8000/about/" class="link" target="_blank">ℹ️ О нас</a></p>
+        <p><a href="http://localhost:8080" class="link" target="_blank">🗄️ PgAdmin (admin:admin)</a></p>
+    </div>
+
+    <div class="section instructions">
+        <h2>🔧 Техническая информация</h2>
+        <h3>Новые компоненты:</h3>
+        <ul>
+            <li><strong>QR-код секция:</strong> Добавлена в модальное окно services_modern.html</li>
+            <li><strong>JavaScript:</strong> Обновлен для работы с generate_qr_code API</li>
+            <li><strong>Backend:</strong> generate_qr_code view создает QR-код и заявку</li>
+            <li><strong>Telegram интеграция:</strong> Обрабатывает /start команды с параметрами</li>
+        </ul>
+        
+        <h3>Workflow:</h3>
+        <ol>
+            <li>Пользователь заполняет форму → JavaScript отправляет POST на /service/generate_qr_code/</li>
+            <li>Django создает Client, ServiceRequest и генерирует QR-код</li>
+            <li>Возвращается ссылка на Telegram бота с токеном</li>
+            <li>Пользователь сканирует QR или переходит по ссылке</li>
+            <li>Telegram бот обрабатывает /start команду и подтверждает заявку</li>
+        </ol>
+    </div>
+</body>
+</html>
